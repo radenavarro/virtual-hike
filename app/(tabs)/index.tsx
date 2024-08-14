@@ -4,6 +4,7 @@ import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { Pasos } from '@/components/home/Pasos';
 
 export default function HomeScreen() {
   return (
@@ -15,7 +16,7 @@ export default function HomeScreen() {
           style={styles.reactLogo}
         />
       }>
-      <ThemedView style={styles.titleContainer}>
+      {/* <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
       </ThemedView>
@@ -45,7 +46,8 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
-      </ThemedView>
+      </ThemedView> */}
+      <Pasos/>
     </ParallaxScrollView>
   );
 }

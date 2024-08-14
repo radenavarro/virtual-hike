@@ -32,6 +32,24 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="config"
+        options={{
+          title: 'Configurar',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="language"
+        options={{
+          title: 'Idioma',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'language' : 'language-outline'} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
