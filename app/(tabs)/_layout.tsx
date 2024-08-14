@@ -1,12 +1,18 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useAppStore } from '@/zustand/useStore';
+import { TemplateTabLayout } from '../types';
+import { spanish } from '../languages/tabs/layout/spanish';
+import { useTemplate } from '@/hooks/useTemplate';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  
+  const { template }:{template: TemplateTabLayout} = useTemplate('tabs/layout')
 
   return (
     <Tabs
@@ -17,7 +23,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: template?.homeText,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
           ),
@@ -35,7 +41,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="config"
         options={{
-          title: 'Configurar',
+          title: template?.configText,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'settings' : 'settings-outline'} color={color} />
           ),
@@ -44,7 +50,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="language"
         options={{
-          title: 'Idioma',
+          title: template?.languageText,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'language' : 'language-outline'} color={color} />
           ),
