@@ -1,28 +1,13 @@
-import { english as languageEnglish } from "@/app/languages/tabs/language/english"
-import { spanish as languageSpanish } from "@/app/languages/tabs/language/spanish"
-import { english as layoutEnglish } from "@/app/languages/tabs/layout/english"
-import { spanish as layoutSpanish } from "@/app/languages/tabs/layout/spanish"
+import { fullAppTemplate } from "@/app/languageTemplates"
 import { Template, TemplateIdioma, TemplateTabLayout } from "@/app/types"
 import { useAppStore } from "@/zustand/useStore"
 import { useEffect, useState } from "react"
 
-const fullAppTemplate = {
-  tabs: {
-    language: {
-      spanish: languageSpanish,
-      english: languageEnglish
-    },
-    layout: {
-      spanish: layoutSpanish,
-      english: layoutEnglish
-    }
-  }
-}
-
 type TemplatePath = typeof fullAppTemplate | 
   typeof fullAppTemplate["tabs"] | 
   typeof fullAppTemplate["tabs"]["language"] | 
-  typeof fullAppTemplate["tabs"]["layout"]
+  typeof fullAppTemplate["tabs"]["layout"] | 
+  typeof fullAppTemplate["tabs"]["index"]
 
 const emptyTemplate:Template = {
   header: '',

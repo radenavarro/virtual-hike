@@ -16,5 +16,9 @@ export const LightThemeColors: CustomTheme = {
         icon: '#687076',
         tabIconDefault: '#687076',
         tabIconSelected: tintColorLight,
+        stepCounter: {
+            border: "rgb(216, 216, 216)",
+            background: "rgb(233, 233, 233)"
+        }
     }
 }
