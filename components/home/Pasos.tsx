@@ -1,9 +1,7 @@
 
-import { useState, useEffect } from 'react';
 import { StyleSheet, Platform, View } from 'react-native';
 import { ThemedView } from '../ThemedView';
 import { ThemedText } from '../ThemedText';
-import { Pedometer } from 'expo-sensors';
 import { useTemplate } from '@/hooks/useTemplate';
 import { useTheme } from '@/hooks/useTheme';
 import { useSteps } from '@/hooks/home/useSteps';
@@ -19,7 +17,11 @@ export const Pasos = () => {
   return (
     <ThemedView style={[{backgroundColor: stepCounter?.background, borderColor: stepCounter?.border}, styles.container]}>
       {/* <ThemedText>Pedometer.isAvailableAsync(): {isPedometerAvailable}</ThemedText> */}
-      <ThemedText type="subtitle">{template.stepCounter?.title}</ThemedText>
+      {
+        !isPedometerAvailable && 
+        <ThemedText>{template.stepCounter?.pedometerDisabledText}</ThemedText>
+      }
+      <ThemedText type="title">{template.stepCounter?.title}</ThemedText>
       <View style={{display: "flex", flexDirection: "row", flexWrap: "nowrap", alignItems: "center"}}>
         <ThemedText type="title">{currentStepCount} </ThemedText><ThemedText>{template.stepCounter?.stepCounterText}</ThemedText>
       </View>
@@ -35,9 +37,10 @@ const styles = StyleSheet.create({
     marginTop: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '50%',
+    width: '80%',
     marginHorizontal: 'auto',
     borderRadius: 16,
-    padding: 8
+    padding: 8,
+    gap: 16
   },
 });

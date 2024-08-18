@@ -27,6 +27,7 @@ export interface Template {
         title?: string;
         stepCounterText?: string;
         pastStepCounterText?: string;
+        pedometerDisabledText?: string;
     }
 }
 export interface TemplateIdioma extends Template {
@@ -45,5 +46,6 @@ export interface TemplateIndex extends Template {
         title: string;
         stepCounterText: string;
         pastStepCounterText: string;
+        pedometerDisabledText: string;
     }
 }

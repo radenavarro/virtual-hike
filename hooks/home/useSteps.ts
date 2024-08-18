@@ -22,7 +22,15 @@ export const useSteps = () => {
     
   useEffect(() => {
     const subscription = subscribe();
-    return () => subscription && subscription?.remove();
+    return () => {
+      try {
+        // const { remove } = subscription?._j
+        // remove && remove()
+        subscription && subscription.remove();
+      } catch (e) {
+        throw new SubscriptionError("Could not unsuscribe from app.")
+      }
+    }
   }, []);
 
   return useMemo(() => ({ isPedometerAvailable, pastStepCount, currentStepCount }), [isPedometerAvailable, pastStepCount, currentStepCount])
