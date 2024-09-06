@@ -12,21 +12,19 @@ export const Pasos = () => {
   const theme = useTheme()
 
   const { isPedometerAvailable, pastStepCount, currentStepCount } = useSteps()
-
-  const {stepCounter} = theme.colors
+  const { stepCounter } = theme.colors
   return (
-    <ThemedView style={[{backgroundColor: stepCounter?.background, borderColor: stepCounter?.border}, styles.container]}>
-      {/* <ThemedText>Pedometer.isAvailableAsync(): {isPedometerAvailable}</ThemedText> */}
+    <ThemedView style={[{ backgroundColor: stepCounter?.background, borderColor: stepCounter?.border }, styles.container]}>
       {
         !isPedometerAvailable && 
-        <ThemedText>{template.stepCounter?.pedometerDisabledText}</ThemedText>
+        <ThemedText>{ template.stepCounter?.pedometerDisabledText }</ThemedText>
       }
-      <ThemedText type="title">{template.stepCounter?.title}</ThemedText>
-      <View style={{display: "flex", flexDirection: "row", flexWrap: "nowrap", alignItems: "center"}}>
-        <ThemedText type="title">{currentStepCount} </ThemedText><ThemedText>{template.stepCounter?.stepCounterText}</ThemedText>
+      <ThemedText type="title">{ template.stepCounter?.title }</ThemedText>
+      <View style={{ display: "flex", flexDirection: "row", flexWrap: "nowrap", alignItems: "center" }}>
+        <ThemedText type="title">{ currentStepCount } </ThemedText><ThemedText>{ template.stepCounter?.stepCounterText }</ThemedText>
       </View>
       
-      <ThemedText>{template.stepCounter?.pastStepCounterText}: {pastStepCount}</ThemedText>
+      <ThemedText>{ template.stepCounter?.pastStepCounterText }: { pastStepCount }</ThemedText>
     </ThemedView>
   );
 }
@@ -40,7 +38,8 @@ const styles = StyleSheet.create({
     width: '80%',
     marginHorizontal: 'auto',
     borderRadius: 16,
-    padding: 8,
-    gap: 16
+    padding: 16,
+    gap: 16,
+    minHeight: 156
   },
 });

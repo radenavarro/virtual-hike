@@ -6,7 +6,10 @@ export const LightThemeColors: CustomTheme = {
     "dark":false,
     "colors":{
         ...DefaultTheme.colors,
-        primary:"rgb(0, 122, 255)",
+        button: {
+            primary:"rgb(0, 122, 255)",
+            text: "rgb(244, 244, 244)"
+        },
         card:"rgb(255, 255, 255)",
         border:"rgb(216, 216, 216)",
         notification:"rgb(255, 59, 48)",

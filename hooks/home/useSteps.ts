@@ -1,3 +1,4 @@
+import { SubscriptionError } from "@/errors/Error";
 import { Pedometer } from "expo-sensors";
 import { useEffect, useMemo, useState } from "react";
 
@@ -28,7 +29,7 @@ export const useSteps = () => {
         // remove && remove()
         subscription && subscription.remove();
       } catch (e) {
-        throw new SubscriptionError("Could not unsuscribe from app.")
+        throw new SubscriptionError("SubscriptionError: Could not unsuscribe from app.")
       }
     }
   }, []);

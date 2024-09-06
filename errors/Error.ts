@@ -1,6 +1,13 @@
-class SubscriptionError extends Error {
+export class SubscriptionError extends Error {
     constructor (message:string) {
         super(message)
-        this.name = 'Subscription_Error'
+        this.name = 'SubscriptionError'
+    }
+}
+
+export class ImageError extends Error {
+    constructor (message:string) {
+        super(message)
+        this.name = 'ImageError'
     }
 }

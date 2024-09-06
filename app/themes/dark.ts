@@ -6,7 +6,10 @@ export const DarkThemeColors: CustomTheme = {
     "dark":true,
     "colors":{
         ...DarkTheme.colors,
-        primary:"rgb(0, 122, 255)",
+        button: {
+            primary:"rgb(0, 122, 255)",
+            text: "rgb(244, 244, 244)"
+        },
         card:"rgb(68, 68, 68)",
         border:"rgb(96, 96, 96)",
         notification:"rgb(255, 59, 48)",
@@ -16,5 +19,9 @@ export const DarkThemeColors: CustomTheme = {
         icon: '#9BA1A6',
         tabIconDefault: '#9BA1A6',
         tabIconSelected: tintColorDark,
+        stepCounter: {
+            border: "rgb(125, 125, 125)",
+            background: "rgb(100, 100, 100)"
+        }
     }
 }

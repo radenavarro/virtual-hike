@@ -3,6 +3,10 @@ import { Theme } from "@react-navigation/native"
 export type Idioma = 'Español' | 'English'
 
 type CustomColors = {
+    button: {
+        primary: string;
+        text: string;
+    };
     tint: string;
     icon: string;
     tabIconDefault: string;
@@ -10,7 +14,7 @@ type CustomColors = {
     stepCounter: {
         border: string;
         background: string;
-    }
+    };
 }
 
 export type CustomTheme = Theme & {colors: Theme["colors"] & CustomColors}
