@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Platform, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Image, Platform, TextInput, TouchableOpacity, View, Modal } from 'react-native';
 import { useState } from 'react';
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -12,10 +12,10 @@ import { useTheme } from '@/hooks/useTheme';
 import { useAppStore } from '@/zustand/useStore';
 // ICONOS
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { ModalRuta } from '@/components/config/ModalRuta';
 
 export default function TabThreeScreen() {
   const [objectiveInSteps, setObjectiveInSteps] = useState(true)
-  const [routeObjectiveInSteps, setrouteObjectiveInSteps] = useState(true)
 
   //Store Zustand
   const { objetivo, setObjetivo, datosUser, setDatosUser } = useAppStore()
@@ -53,12 +53,6 @@ export default function TabThreeScreen() {
     },
     hideWhenObjectiveInSteps: {
       display: !objectiveInSteps ? "flex" : "none"
-    },
-    showWhenRouteObjectiveInSteps: {
-      display: routeObjectiveInSteps ? "flex" : "none"
-    },
-    hideWhenRouteObjectiveInSteps: {
-      display: !routeObjectiveInSteps ? "flex" : "none"
     }
   })
 
@@ -66,17 +60,10 @@ export default function TabThreeScreen() {
     setObjectiveInSteps(!objectiveInSteps)
   }
 
-  function handleRouteObjectiveUnits () {
-    setrouteObjectiveInSteps(!routeObjectiveInSteps)
-  }
-
   function setObjectives () {
     
   }
 
-  function setRouteObjectives () {
-
-  }
 
   function setPrevObjetivo () {
 
@@ -85,7 +72,8 @@ export default function TabThreeScreen() {
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#e09fd9', dark: '#65235e' }}
-      headerImage={<Ionicons size={310} name="settings" style={styles.headerImage} />}>
+      headerImage={<Ionicons size={310} name="settings" style={styles.headerImage} />}
+    >
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Configuración</ThemedText>
       </ThemedView>
@@ -132,35 +120,14 @@ export default function TabThreeScreen() {
         </TouchableOpacity>
       </ThemedView>
     
-      <ThemedText>¿Quieres establecer una ruta?. Puedes añadirla a mano, si quieres.</ThemedText>
+      <ThemedText>¿Quieres establecer una ruta?. Puedes añadirla a mano, o seleccionar alguna de las que ya hay.</ThemedText>
       <ThemedView style={styles.elementContainer}>
-        <ThemedText type="defaultSemiBold">Objetivo de ruta: </ThemedText>
-        <TextInput keyboardType="numeric" placeholder="Pasos" placeholderTextColor={theme.colors.border} style={[styles.input, themedStyles.inputBorder, themedStyles.showWhenRouteObjectiveInSteps]} />
-        <ThemedText style={[themedStyles.showWhenRouteObjectiveInSteps]}>Pasos</ThemedText>
-        <TextInput keyboardType="numeric" placeholder="Kilómetros" placeholderTextColor={theme.colors.border} style={[styles.input, themedStyles.inputBorder, themedStyles.hideWhenRouteObjectiveInSteps]} />
-        <ThemedText style={[themedStyles.hideWhenRouteObjectiveInSteps]}>Kms</ThemedText>
-        <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-          <FontAwesome6 name="trash-can" size={24} style={[ themedStyles.buttonDefaultText ]} />
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]} onPress={handleRouteObjectiveUnits}>
-          <FontAwesome6 name="arrows-rotate" size={24} style={[ themedStyles.buttonDefaultText ]} />
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={setRouteObjectives}>
-          <FontAwesome6 name="add" size={24} style={[ themedStyles.buttonPrimaryText ]} />
-        </TouchableOpacity>
+        <ThemedText type="defaultSemiBold">Gestionar rutas: </ThemedText>
+        <ModalRuta
+          animationType="slide"
+          transparent
+        />
       </ThemedView>
-
-      <ThemedView style={styles.elementContainer}>
-        <ThemedText type="defaultSemiBold">Días para completar la ruta: </ThemedText>
-        <TextInput keyboardType="numeric" placeholder="Nº días" placeholderTextColor={theme.colors.border} style={[styles.input, themedStyles.inputBorder]} />
-        <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-          <FontAwesome6 name="trash-can" size={24} style={[ themedStyles.buttonDefaultText ]} />
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]}>
-          <FontAwesome6 name="add" size={24} style={[ themedStyles.buttonPrimaryText ]} />
-        </TouchableOpacity>
-      </ThemedView>
-
     </ParallaxScrollView>
   );
 }
