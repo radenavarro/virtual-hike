@@ -2,10 +2,14 @@ import { Theme } from "@react-navigation/native"
 
 export type Idioma = 'Español' | 'English'
 
+type Color = {
+    color: string;
+    text: string;
+}
 type CustomColors = {
     button: {
-        primary: string;
-        text: string;
+        primary: Color;
+        default: Color;
     };
     tint: string;
     icon: string;

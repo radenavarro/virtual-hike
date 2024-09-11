@@ -7,8 +7,14 @@ export const LightThemeColors: CustomTheme = {
     "colors":{
         ...DefaultTheme.colors,
         button: {
-            primary:"rgb(0, 122, 255)",
-            text: "rgb(244, 244, 244)"
+            primary: {
+                color:"rgb(0, 122, 255)",
+                text: "rgb(244, 244, 244)"
+            },
+            default: {
+                color: "rgb(216, 216, 216)",
+                text: "#11181C"
+            }
         },
         card:"rgb(255, 255, 255)",
         border:"rgb(216, 216, 216)",

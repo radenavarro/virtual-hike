@@ -18,6 +18,23 @@ type Objetivo = {
   largoPlazo?: number;
 }
 
+type Split = {
+  nombre: string;
+  km: number;
+  sprites: {
+    skybox: string;
+    ground: string;
+    overlay: string;
+  }
+}
+
+type Ruta = {
+  uuid: string;
+  nombre: string;
+  duracion: number;// KMs
+  splits?: Split[];
+}
+
 type UseStoreProps = {
   registro: Registro;
   setRegistro: (registro: Registro) => void
@@ -29,12 +46,16 @@ type UseStoreProps = {
   setDatosUser: (datosUser: DatosUser) => void;
   objetivo: Objetivo;
   setObjetivo: (nuevoObjetivo: Objetivo) => void;
+  ruta: Ruta[];
+  addRuta: (nuevaRuta: Ruta) => void;
+  deleteRuta: (uuid: string) => void;
 }
 
 export const useAppStore = create<UseStoreProps>()(
     devtools(
       persist(
         (set) => ({
+          // PASOS A MOSTRAR EN EL VISOR DE HOME Y EN EL HISTÓRICO DE PASOS POR DÍA
           registro: {
             fecha: dayjs(),
             pasos: 0
@@ -45,8 +66,10 @@ export const useAppStore = create<UseStoreProps>()(
             pasos: 0
           }],
           agregarAHistorico: (nuevoRegistro) => set((state) => ({ historico: [...state.historico, nuevoRegistro] })),
+          // MULTIIDIOMA
           idioma: 'Español',
           setIdioma: (idioma:Idioma) => set({idioma}),
+          // CONFIGURACIÓN DE USUARIO
           datosUser: {
             altura: undefined
           },
@@ -56,6 +79,9 @@ export const useAppStore = create<UseStoreProps>()(
             largoPlazo: undefined
           },
           setObjetivo: (objetivo) => set({ objetivo }),
+          ruta: [],
+          addRuta: (ruta) => set((state) => ({ ruta: [...state.ruta, ruta] })),
+          deleteRuta: (uuid) => set((state) => ({ ruta: state.ruta.filter(ruta => ruta.uuid !== uuid) })),
         }),
         {
           name: 'appstore',

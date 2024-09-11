@@ -1,14 +1,17 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Platform, TextInput, TouchableOpacity } from 'react-native';
-
+import { StyleSheet, Image, Platform, TextInput, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+// CUSTOM HOOKS
 import { useTheme } from '@/hooks/useTheme';
-import { useState } from 'react';
+// STORE
 import { useAppStore } from '@/zustand/useStore';
+// ICONOS
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 export default function TabThreeScreen() {
   const [objectiveInSteps, setObjectiveInSteps] = useState(true)
@@ -28,17 +31,19 @@ export default function TabThreeScreen() {
   const theme = useTheme()
   const themedStyles = StyleSheet.create({
     buttonPrimary: {
-      backgroundColor: theme.colors.button?.primary,
-      color: theme.colors.button?.text
+      backgroundColor: theme.colors.button?.primary?.color,
+      // color: theme.colors.button?.text
+    },
+    buttonPrimaryText: {
+      color: theme.colors.button?.primary?.text
     },
     buttonDefault: {
       borderColor: theme.colors.border,
       borderWidth: 1,
       fontWeight: "bold"
     },
-    buttonFont: {
-      fontWeight: "bold",
-      fontSize: 24
+    buttonDefaultText: {
+      color: theme.colors.button?.default?.text
     },
     inputBorder: {
       borderColor: theme.colors.border
@@ -90,10 +95,10 @@ export default function TabThreeScreen() {
         <ThemedText type="defaultSemiBold">Altura: </ThemedText>
         <TextInput keyboardType="numeric" placeholder="Centímetros" placeholderTextColor={theme.colors.border} style={[styles.input, themedStyles.inputBorder]} />
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-          <ThemedText style={[ themedStyles.buttonFont ]}>×</ThemedText>
+          <FontAwesome6 name="trash-can" size={24} style={[ themedStyles.buttonDefaultText ]} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]}>
-          <ThemedText style={[ themedStyles.buttonFont ]}>+</ThemedText>
+          <FontAwesome6 name="add" size={24} style={[ themedStyles.buttonPrimaryText, styles.icon ]} />
         </TouchableOpacity>
       </ThemedView>
 
@@ -117,13 +122,13 @@ export default function TabThreeScreen() {
         />
         <ThemedText style={[themedStyles.hideWhenObjectiveInSteps]}>Kms</ThemedText>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-          <ThemedText style={[ themedStyles.buttonFont ]}>×</ThemedText>
+          <FontAwesome6 name="trash-can" size={24} style={[ themedStyles.buttonDefaultText ]} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]} onPress={handleObjectiveUnits}>
-          <ThemedText style={[ themedStyles.buttonFont ]}>⇌</ThemedText>
+          <FontAwesome6 name="arrows-rotate" size={24} style={[ themedStyles.buttonDefaultText ]} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={setObjectives}>
-          <ThemedText style={[ themedStyles.buttonFont ]}>+</ThemedText>
+          <FontAwesome6 name="add" size={24} style={[ themedStyles.buttonPrimaryText ]} />
         </TouchableOpacity>
       </ThemedView>
     
@@ -135,13 +140,13 @@ export default function TabThreeScreen() {
         <TextInput keyboardType="numeric" placeholder="Kilómetros" placeholderTextColor={theme.colors.border} style={[styles.input, themedStyles.inputBorder, themedStyles.hideWhenRouteObjectiveInSteps]} />
         <ThemedText style={[themedStyles.hideWhenRouteObjectiveInSteps]}>Kms</ThemedText>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-          <ThemedText style={[ themedStyles.buttonFont ]}>×</ThemedText>
+          <FontAwesome6 name="trash-can" size={24} style={[ themedStyles.buttonDefaultText ]} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]} onPress={handleRouteObjectiveUnits}>
-          <ThemedText style={[ themedStyles.buttonFont ]}>⇌</ThemedText>
+          <FontAwesome6 name="arrows-rotate" size={24} style={[ themedStyles.buttonDefaultText ]} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={setRouteObjectives}>
-          <ThemedText style={[ themedStyles.buttonFont ]}>+</ThemedText>
+          <FontAwesome6 name="add" size={24} style={[ themedStyles.buttonPrimaryText ]} />
         </TouchableOpacity>
       </ThemedView>
 
@@ -149,10 +154,10 @@ export default function TabThreeScreen() {
         <ThemedText type="defaultSemiBold">Días para completar la ruta: </ThemedText>
         <TextInput keyboardType="numeric" placeholder="Nº días" placeholderTextColor={theme.colors.border} style={[styles.input, themedStyles.inputBorder]} />
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-          <ThemedText style={[ themedStyles.buttonFont ]}>×</ThemedText>
+          <FontAwesome6 name="trash-can" size={24} style={[ themedStyles.buttonDefaultText ]} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]}>
-          <ThemedText style={[ themedStyles.buttonFont ]}>+</ThemedText>
+          <FontAwesome6 name="add" size={24} style={[ themedStyles.buttonPrimaryText ]} />
         </TouchableOpacity>
       </ThemedView>
 
@@ -189,5 +194,8 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 48
+  },
+  icon: {
+    lineHeight: 24
   }
 });

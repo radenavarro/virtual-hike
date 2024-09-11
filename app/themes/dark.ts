@@ -7,8 +7,14 @@ export const DarkThemeColors: CustomTheme = {
     "colors":{
         ...DarkTheme.colors,
         button: {
-            primary:"rgb(0, 122, 255)",
-            text: "rgb(244, 244, 244)"
+            primary: {
+                color: "rgb(0, 122, 255)",
+                text: "rgb(244, 244, 244)"
+            },
+            default: {
+                color: "rgb(255 255 255 / 0.2)",
+                text: "rgb(244, 244, 244)"
+            }  
         },
         card:"rgb(68, 68, 68)",
         border:"rgb(96, 96, 96)",
