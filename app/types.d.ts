@@ -4,11 +4,14 @@ export type Idioma = 'Español' | 'English'
 
 type Color = {
     color: string;
+    disabledColor?: string;
     text: string;
+    disabledText?: string;
 }
 type CustomColors = {
     button: {
         primary: Color;
+        danger: Color;
         default: Color;
     };
     tint: string;
@@ -56,4 +59,38 @@ export interface TemplateIndex extends Template {
         pastStepCounterText: string;
         pedometerDisabledText: string;
     }
+}
+
+// STORE
+
+export type Registro = {
+    fecha?: dayjs.Dayjs;
+    pasos?: number;
+}
+
+export type DatosUser = {
+  altura?: number
+}
+
+export type Objetivo = {
+  diario?: number;
+  largoPlazo?: number;
+}
+
+export type Split = {
+  nombre: string;
+  km: number;
+  duracion: number;
+  sprites?: {
+    skybox: string;
+    ground: string;
+    overlay: string;
+  }
+}
+
+export type Ruta = {
+  uuid: string;
+  nombre: string;
+  duracion: number;// KMs
+  splits?: Split[];
 }

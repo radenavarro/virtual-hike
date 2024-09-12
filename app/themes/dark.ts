@@ -9,11 +9,21 @@ export const DarkThemeColors: CustomTheme = {
         button: {
             primary: {
                 color: "rgb(0, 122, 255)",
-                text: "rgb(244, 244, 244)"
+                disabledColor: "rgb(29, 80, 134)",
+                text: "rgb(244, 244, 244)",
+                disabledText: "rgb(152, 157, 177)"
+            },
+            danger: {
+                color: "rgb(193, 2, 2)",
+                disabledColor: "rgb(112, 16, 16)",
+                text: "rgb(244, 244, 244)",
+                disabledText: "rgb(189, 137, 137)"
             },
             default: {
                 color: "rgb(255 255 255 / 0.2)",
-                text: "rgb(244, 244, 244)"
+                disabledColor: "rgba(0, 0, 0, 0)",
+                text: "rgb(244, 244, 244)",
+                disabledText: "rgb(90, 90, 90)",
             }  
         },
         card:"rgb(68, 68, 68)",

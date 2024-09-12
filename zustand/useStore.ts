@@ -1,39 +1,9 @@
-import { Idioma } from '@/app/types';
+import { DatosUser, Idioma, Objetivo, Registro, Ruta } from '@/app/types';
+import { rutasDefault } from '@/constants/rutasDefault';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import dayjs from 'dayjs'
 import { create } from 'zustand'
 import { persist, devtools, createJSONStorage } from 'zustand/middleware'
-
-type Registro = {
-    fecha?: dayjs.Dayjs;
-    pasos?: number;
-}
-
-type DatosUser = {
-  altura?: number
-}
-
-type Objetivo = {
-  diario?: number;
-  largoPlazo?: number;
-}
-
-type Split = {
-  nombre: string;
-  km: number;
-  sprites: {
-    skybox: string;
-    ground: string;
-    overlay: string;
-  }
-}
-
-type Ruta = {
-  uuid: string;
-  nombre: string;
-  duracion: number;// KMs
-  splits?: Split[];
-}
 
 type UseStoreProps = {
   registro: Registro;
@@ -79,7 +49,7 @@ export const useAppStore = create<UseStoreProps>()(
             largoPlazo: undefined
           },
           setObjetivo: (objetivo) => set({ objetivo }),
-          ruta: [],
+          ruta: rutasDefault,
           addRuta: (ruta) => set((state) => ({ ruta: [...state.ruta, ruta] })),
           deleteRuta: (uuid) => set((state) => ({ ruta: state.ruta.filter(ruta => ruta.uuid !== uuid) })),
         }),

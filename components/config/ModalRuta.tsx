@@ -1,10 +1,11 @@
 import { useTheme } from "@/hooks/useTheme";
-import { FlatList, Modal, ModalProps, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Modal, ModalProps, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "../ThemedText";
-import { FontAwesome6, Ionicons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { ThemedView } from "../ThemedView";
 import { useState } from "react";
 import { useAppStore } from "@/zustand/useStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /**
  * Componente Modal que se encarga de las rutas. Entiéndase como un partial.
@@ -16,19 +17,21 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
   const [routeObjectiveInSteps, setrouteObjectiveInSteps] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [showListRutas, setShowListRutas] = useState(false)
+  const [selectedRuta, setSelectedRuta] = useState<string | undefined>(undefined)
 
   const { ruta, addRuta, deleteRuta } = useAppStore()
 
   const theme = useTheme();
+  
   const themedStyles = StyleSheet.create({
     modalWrapper: {
       minWidth: "100%",
       minHeight: "100%",
-      backgroundColor: "rgba(0, 0, 0, 0.4)"
+      backgroundColor: "rgba(0, 0, 0, 0.8)",
     },
     modal: {
       minHeight: "100%",
-      width: "90%",
+      width: "100%",
       marginHorizontal: "auto",
     },
     modalSuperiorBar: {
@@ -47,15 +50,21 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
     },
     buttonPrimary: {
       backgroundColor: theme.colors.button?.primary?.color,
-      // color: theme.colors.button?.text
     },
     buttonPrimaryText: {
       color: theme.colors.button?.primary?.text
     },
+    buttonDanger: {
+      backgroundColor: selectedRuta ? theme.colors.button?.danger?.color : theme.colors.button?.danger?.disabledColor,
+    },
+    buttonDangerText: {
+      color: selectedRuta ? theme.colors.button?.danger?.text : theme.colors.button?.danger?.disabledText
+    },
     buttonDefault: {
       borderColor: theme.colors.border,
       borderWidth: 1,
-      fontWeight: "bold"
+      fontWeight: "bold",
+      backgroundColor: selectedRuta ? theme.colors.button?.default?.color : theme.colors.button?.default?.disabledColor
     },
     buttonDefaultText: {
       color: theme.colors.button?.default?.text
@@ -68,6 +77,13 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
     },
     hideWhenRouteObjectiveInSteps: {
       display: !routeObjectiveInSteps ? "flex" : "none"
+    },
+    closeButton: { 
+      width: 48, height: 48, backgroundColor: theme.colors.background,
+      display: "flex", flexDirection: "row", flexWrap: "nowrap", justifyContent: "center", alignItems: "center"
+    },
+    rutaItem: {
+      borderColor: theme.colors.border, borderWidth: 1, padding: 10, borderRadius: 8
     }
   })
 
@@ -79,16 +95,35 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
 
   }
 
-  function toggleRutas () {
-    setShowListRutas(!showListRutas)
-  }
+  function toggleRutas () { setShowListRutas(!showListRutas) }
 
-  function showModalRutas () {
-    setShowModal(true)
-  }
+  function showModalRutas () { setShowModal(true) }
 
-  function hideModalRutas () {
-    setShowModal(false)
+  function hideModalRutas () { setShowModal(false) }
+
+  function selectRuta (uuid:string) { setSelectedRuta(uuid) }
+
+  function deselectRuta () { setSelectedRuta(undefined) }
+
+  const confirmDeleteRuta = () => {
+    if (selectedRuta) {
+      Alert.alert(
+        "Eliminar ruta",
+        "¿Seguro que quieres eliminar esta ruta?. Eliminarla la borrará del registro interno.",
+        [
+          {
+            text: "No eliminar",
+            style: "cancel"
+          },
+          {
+            text: "Eliminar del registro",
+            onPress: () => { 
+              deleteRuta(selectedRuta) 
+            }
+          }
+        ]
+      )
+    }
   }
 
   return (
@@ -102,48 +137,107 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
         onRequestClose={otherProps.onRequestClose || hideModalRutas}
         {...otherProps}
       >
-        {/* El modalwrapper sólo añade un alpha fuera del modal */}
         <View style={[themedStyles.modalWrapper]}>
           <View style={[themedStyles.modal]}>
+            {/* Título */}
             <View style={[themedStyles.modalSuperiorBar]}>
               <ThemedText type="subtitle">Gestión de rutas</ThemedText>
-              <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]} onPress={hideModalRutas}>
+              <TouchableOpacity style={[themedStyles.closeButton]} onPress={hideModalRutas}>
                 <Ionicons name="close" size={24} style={[themedStyles.buttonDefaultText]} />
               </TouchableOpacity>
             </View>
+
             <View style={[themedStyles.modalBody]}>
-              <ThemedView style={styles.elementContainer}>
-                <ThemedText>Cargar ruta: </ThemedText>
-                <TouchableOpacity onPress={toggleRutas} style={[styles.roundButton, themedStyles.buttonDefault]}>
-                  <FontAwesome6 name="file-arrow-up" size={24} style={[themedStyles.buttonDefaultText]} />
-                </TouchableOpacity>
-                
+              {/* Visor de ruta */}
+              <ThemedView style={[styles.elementContainer, {justifyContent: "space-between"}]}>
+                <View style={[styles.elementBlock]}>
+                  <ThemedText>Ruta actual: </ThemedText>
+                  <ThemedText 
+                    numberOfLines={1} 
+                    ellipsizeMode="tail"
+                    style={{maxWidth: 180}}
+                  >
+                    {selectedRuta ? ruta.find(ruta => ruta.uuid === selectedRuta)?.nombre : "Ninguna"}
+                  </ThemedText>
+                </View>
+                <View style={[styles.elementBlock]}>
+                  <TouchableOpacity 
+                    disabled={!selectedRuta} 
+                    onPress={deselectRuta} 
+                    style={[
+                      styles.roundButton, themedStyles.buttonDefault, 
+                      {backgroundColor: selectedRuta ? theme.colors.button?.default?.color : theme.colors.button?.default?.disabledColor}
+                    ]}>
+                    <MaterialIcons 
+                      name="delete-outline" 
+                      size={24} 
+                      style={[
+                        themedStyles.buttonDefaultText, 
+                        {color: selectedRuta ? theme.colors.button?.default?.text : theme.colors.button?.default?.disabledText}
+                      ]} 
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity disabled={!selectedRuta} onPress={confirmDeleteRuta} style={[styles.roundButton, themedStyles.buttonDanger]}>                  
+                    <MaterialIcons name="delete-forever" size={24} style={themedStyles.buttonDangerText} />
+                  </TouchableOpacity>
+                </View> 
+              </ThemedView>
+
+              {/* Carga de ruta */}
+              <ThemedView style={[styles.elementContainer]}>
+                <View style={[styles.elementBlock]}>
+                  <ThemedText>Cargar ruta: </ThemedText>
+                  <TouchableOpacity onPress={toggleRutas} style={[styles.roundButton, themedStyles.buttonDefault]}>
+                    <MaterialIcons name="upload-file" size={24} style={[themedStyles.buttonDefaultText]} />
+                  </TouchableOpacity>
+                </View>
+              </ThemedView>
+
+              {/* Lista de rutas */}
+              <ThemedView style={[styles.elementContainer, {display: showListRutas ? "flex" : "none"}]}>
                 <FlatList 
+                  style={{height: 100, width: "100%"}}
+                  keyExtractor={(item) => item.uuid}
                   data={ruta}
+                  numColumns={4}
                   renderItem={({item}) => (
-                    <ThemedText>{item.nombre}</ThemedText>
+                    <TouchableOpacity style={themedStyles.rutaItem} onPress={() => selectRuta(item.uuid)}>
+                      <ThemedText>{item.nombre}</ThemedText>
+                    </TouchableOpacity>
                   )}
                 />
               </ThemedView>
-              <ThemedView style={styles.elementContainer}>
-                <ThemedText style={[themedStyles.showWhenRouteObjectiveInSteps]}>Pasos</ThemedText>
-                <TextInput
-                  keyboardType="numeric"
-                  placeholder="Kilómetros"
-                  placeholderTextColor={theme.colors.border}
-                  style={[styles.input, themedStyles.inputBorder, themedStyles.hideWhenRouteObjectiveInSteps]}
-                />
-                <ThemedText style={[themedStyles.hideWhenRouteObjectiveInSteps]}>Kms</ThemedText>
-                <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-                  <FontAwesome6 name="trash-can" size={24} style={[themedStyles.buttonDefaultText]} />
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]} onPress={handleRouteObjectiveUnits}>
-                  <FontAwesome6 name="arrows-rotate" size={24} style={[themedStyles.buttonDefaultText]} />
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={setRouteObjectives}>
-                  <FontAwesome6 name="add" size={24} style={[themedStyles.buttonPrimaryText]} />
-                </TouchableOpacity>
+
+              <ThemedView style={[styles.elementContainer, {justifyContent: "space-between"}]}>
+                <View style={styles.elementBlock}>
+                  <TextInput
+                    keyboardType="numeric"
+                    placeholder="Pasos"
+                    placeholderTextColor={theme.colors.border}
+                    style={[styles.input, themedStyles.inputBorder, themedStyles.showWhenRouteObjectiveInSteps]}
+                  />
+                  <ThemedText style={[themedStyles.showWhenRouteObjectiveInSteps]}>Pasos</ThemedText>
+                  <TextInput
+                    keyboardType="numeric"
+                    placeholder="Kilómetros"
+                    placeholderTextColor={theme.colors.border}
+                    style={[styles.input, themedStyles.inputBorder, themedStyles.hideWhenRouteObjectiveInSteps]}
+                  />
+                  <ThemedText style={[themedStyles.hideWhenRouteObjectiveInSteps]}>Kms</ThemedText>
+                </View>
+                <View style={styles.elementBlock}>
+                  <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
+                    <MaterialIcons name="delete-outline" size={24} style={[themedStyles.buttonDefaultText]} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]} onPress={handleRouteObjectiveUnits}>
+                    <MaterialIcons name="autorenew" size={24} style={[themedStyles.buttonDefaultText]} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={setRouteObjectives}>
+                    <FontAwesome6 name="add" size={24} style={[themedStyles.buttonPrimaryText]} />
+                  </TouchableOpacity>
+                </View>
               </ThemedView>
+
               <ThemedView style={styles.elementContainer}>
                 <ThemedText type="defaultSemiBold">Días para completar la ruta: </ThemedText>
                 <TextInput
@@ -153,14 +247,14 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
                   style={[styles.input, themedStyles.inputBorder]}
                 />
                 <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-                  <FontAwesome6 name="trash-can" size={24} style={[themedStyles.buttonDefaultText]} />
+                  <MaterialIcons name="delete-outline" size={24} style={[themedStyles.buttonDefaultText]} />
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]}>
                   <FontAwesome6 name="add" size={24} style={[themedStyles.buttonPrimaryText]} />
                 </TouchableOpacity>
               </ThemedView>
-            </View>      
-          </View> 
+            </View>
+          </View>      
         </View>
       </Modal>
     </>
@@ -179,7 +273,16 @@ const styles = StyleSheet.create({
   },
   elementContainer: {
     marginVertical: 10,
+    display: 'flex',
     flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    alignItems: 'center'
+  },
+  elementBlock: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
     gap: 8,
     alignItems: 'center'
   },

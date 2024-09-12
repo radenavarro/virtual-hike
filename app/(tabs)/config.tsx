@@ -13,6 +13,7 @@ import { useAppStore } from '@/zustand/useStore';
 // ICONOS
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { ModalRuta } from '@/components/config/ModalRuta';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function TabThreeScreen() {
   const [objectiveInSteps, setObjectiveInSteps] = useState(true)
@@ -83,7 +84,7 @@ export default function TabThreeScreen() {
         <ThemedText type="defaultSemiBold">Altura: </ThemedText>
         <TextInput keyboardType="numeric" placeholder="Centímetros" placeholderTextColor={theme.colors.border} style={[styles.input, themedStyles.inputBorder]} />
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-          <FontAwesome6 name="trash-can" size={24} style={[ themedStyles.buttonDefaultText ]} />
+          <MaterialIcons name="delete-outline" size={24} style={[ themedStyles.buttonDefaultText ]} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]}>
           <FontAwesome6 name="add" size={24} style={[ themedStyles.buttonPrimaryText, styles.icon ]} />
@@ -110,10 +111,10 @@ export default function TabThreeScreen() {
         />
         <ThemedText style={[themedStyles.hideWhenObjectiveInSteps]}>Kms</ThemedText>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-          <FontAwesome6 name="trash-can" size={24} style={[ themedStyles.buttonDefaultText ]} />
+          <MaterialIcons name="delete-outline" size={24} style={[ themedStyles.buttonDefaultText ]} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]} onPress={handleObjectiveUnits}>
-          <FontAwesome6 name="arrows-rotate" size={24} style={[ themedStyles.buttonDefaultText ]} />
+          <MaterialIcons name="autorenew" size={24} style={[themedStyles.buttonDefaultText]} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={setObjectives}>
           <FontAwesome6 name="add" size={24} style={[ themedStyles.buttonPrimaryText ]} />
