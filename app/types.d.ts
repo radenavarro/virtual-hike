@@ -74,7 +74,7 @@ export type DatosUser = {
 
 export type Objetivo = {
   diario?: number;
-  largoPlazo?: number;
+  ruta?: number;
 }
 
 export type Split = {
@@ -94,3 +94,7 @@ export type Ruta = {
   duracion: number;// KMs
   splits?: Split[];
 }
+
+// CONFIG
+
+export type UnidadObjetivo = 'pasos' | 'kms'

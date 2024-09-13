@@ -46,7 +46,7 @@ export const useAppStore = create<UseStoreProps>()(
           setDatosUser: (datosUser) => set({ datosUser }),
           objetivo: {
             diario: undefined,
-            largoPlazo: undefined
+            ruta: undefined
           },
           setObjetivo: (objetivo) => set({ objetivo }),
           ruta: rutasDefault,

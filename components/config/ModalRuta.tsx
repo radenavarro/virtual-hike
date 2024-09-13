@@ -5,7 +5,6 @@ import { FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { ThemedView } from "../ThemedView";
 import { useState } from "react";
 import { useAppStore } from "@/zustand/useStore";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 /**
  * Componente Modal que se encarga de las rutas. Entiéndase como un partial.
@@ -109,7 +108,7 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
     if (selectedRuta) {
       Alert.alert(
         "Eliminar ruta",
-        "¿Seguro que quieres eliminar esta ruta?. Eliminarla la borrará del registro interno.",
+        "¿Seguro que quieres eliminar esta ruta?. Se borrará permanentemente.",
         [
           {
             text: "No eliminar",
@@ -117,9 +116,7 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
           },
           {
             text: "Eliminar del registro",
-            onPress: () => { 
-              deleteRuta(selectedRuta) 
-            }
+            onPress: () => { deleteRuta(selectedRuta) }
           }
         ]
       )

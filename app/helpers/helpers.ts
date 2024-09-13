@@ -1,5 +1,9 @@
+import { useAppStore } from "@/zustand/useStore"
+import { UnidadObjetivo } from "../types"
+import { CalculationError } from "@/errors/Error"
+
 export function throttle (mainFunction: (...params:any[]) => void, delay: number) {
-  let timerFlag: number | null = null
+  let timerFlag: NodeJS.Timeout | null = null
   
   return (...args: any[]) => {
     if (timerFlag === null) {
@@ -11,20 +15,28 @@ export function throttle (mainFunction: (...params:any[]) => void, delay: number
   }
 }
 
-export function debounce(func: () => void, wait: number, immediate: boolean) {
-  let timeout;
+/**
+ * Conversión de pasos a kms y viceversa. Es una aproximación, no son valores exactos
+ * 
+ * @param value 
+ * @param type 
+ * @param pace (min/km)
+ */
+export function objectiveConvert (value:number, type: UnidadObjetivo, pace: number = 9) {
+  let resultValue = 0;
+  const height = useAppStore.getState()?.datosUser?.altura
+  if (!height) throw new CalculationError("CalculationError: La altura no ha sido configurada o es inválida")
+  const stepLength = height * 0.414 / 100;// 0.414 es una constante, los valores más exactos serían 0.413 para mujeres y 0.415 para hombres pero aquí se usa un promedio
 
-  return function(...args) {
-    const context = this;
-    const later = function() {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    };
+  if (type === "pasos") {
+    resultValue = (value * stepLength) / 1000;
+  }
+  if (type === "kms") {
+    resultValue = Math.round((value * 1000) / stepLength);
+  }
 
-    const callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
+  if (isNaN(resultValue)) 
+    throw new CalculationError("La conversión de unidades objetivo no ha sido correcta, el resultado no es numérico")
 
-    if (callNow) func.apply(context, args);
-  };
+  return resultValue
 }
