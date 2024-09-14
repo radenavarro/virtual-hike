@@ -19,10 +19,10 @@ export function throttle (mainFunction: (...params:any[]) => void, delay: number
  * Conversión de pasos a kms y viceversa. Es una aproximación, no son valores exactos
  * 
  * @param value 
- * @param type 
- * @param pace (min/km)
+ * @param type La unidad que estás enviando. Por ejemplo, si envías pasos, la conversión se hará en kms
+ * 
  */
-export function objectiveConvert (value:number, type: UnidadObjetivo, pace: number = 9) {
+export function objectiveConvert (value:number, type: UnidadObjetivo) {
   let resultValue = 0;
   const height = useAppStore.getState()?.datosUser?.altura
   if (!height) throw new CalculationError("CalculationError: La altura no ha sido configurada o es inválida")
@@ -36,7 +36,7 @@ export function objectiveConvert (value:number, type: UnidadObjetivo, pace: numb
   }
 
   if (isNaN(resultValue)) 
-    throw new CalculationError("La conversión de unidades objetivo no ha sido correcta, el resultado no es numérico")
+    throw new CalculationError("CalculationError: La conversión de unidades objetivo no ha sido correcta, el resultado no es numérico")
 
   return resultValue
 }

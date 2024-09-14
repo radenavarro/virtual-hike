@@ -13,7 +13,6 @@ import { useAppStore } from '@/zustand/useStore';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { ModalRuta } from '@/components/config/ModalRuta';
 import { MaterialIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
-import { CalculationError } from '@/errors/Error';
 import { objectiveConvert } from '../helpers/helpers';
 import Toast from 'react-native-root-toast';
 
@@ -26,7 +25,12 @@ export default function TabThreeScreen() {
   const [prevInfo, setPrevInfo] = useState({
     altura: datosUser.altura,
     objetivo: {
-      diario: objetivo.diario,
+      // Se guarda en ambas unidades para nutrir a los inputs, pero en la store se guardará sólo en pasos
+      diario: {
+        pasos: objetivo.diario,
+        kms: (objetivo.diario && !isNaN(objetivo.diario)) ? objectiveConvert(objetivo.diario, "pasos") : undefined
+      },
+      // En la store se guarda sólo en kms
       ruta: objetivo.ruta
     }
   })
@@ -72,33 +76,76 @@ export default function TabThreeScreen() {
     setMeasureSteps(!measureSteps)
   }
 
-  function setObjectives () {
-    
+  /**
+   * Actualiza la store con los objetivos diarios que haya seteados en el estado
+   */
+  function setDailyObjectives () {
+    setObjetivo({ ...objetivo, diario: prevInfo.objetivo.diario.pasos })
   }
 
   function setObjectiveInSteps (text: string) {
-    let num = parseInt(text);
-    let kms = objectiveConvert(num, "pasos");
-    console.log(kms)
+    let num: number | undefined = parseInt(text);
+    let kms = undefined;
+    if (!isNaN(num)) {
+      kms = objectiveConvert(num, "pasos");
+    } else {
+      num = undefined
+    }
+    setPrevInfo({
+       ...prevInfo, 
+       objetivo: { 
+        ...prevInfo.objetivo, 
+        diario: {
+          pasos: num,
+          kms
+        } 
+      }
+    })
   }
 
+  /**
+   * Actualiza el objetivo en kilómetros, únicamente en el estado
+   * @param text Kilómetros
+   */
   function setObjectiveInKilometers (text: string) {
-    console.log(text)
+    let pasos = undefined
+    let kms: number | undefined = parseInt(text);
+    if (!isNaN(kms)) {
+      pasos = objectiveConvert(kms, "kms");
+    } else {
+      kms = undefined
+    }
+    setPrevInfo({ 
+      ...prevInfo, 
+      objetivo: { 
+        ...prevInfo.objetivo, 
+        diario: {
+          pasos,
+          kms
+        } 
+      } 
+    })
   }
 
-  function setPrevObjetivo () {
-
-  }
-
+  /**
+   * Actualiza la altura del user, únicamente en el estado
+   * @param text Altura
+   */
   function setHeight (text: string) {
     const altura = parseInt(text)
     setPrevInfo({ ...prevInfo, altura })
   }
 
+  /**
+   * Reinicia la altura únicamente en el estado
+   */
   function resetHeight () {
     setPrevInfo({ ...prevInfo, altura: datosUser.altura })
   }
 
+  /**
+   * Actualiza la altura en la store
+   */
   function updateUserInStore () {
     setDatosUser({altura: prevInfo.altura})
     Toast.show('Altura actualizada', {
@@ -106,6 +153,9 @@ export default function TabThreeScreen() {
     })
   }
 
+  /**
+   * Muestra la información sobre la conversión de pasos a kilómetros y viceversa
+   */
   function showUnitConversionInfo () {
     Alert.alert(
       "Sobre la conversión de unidades",
@@ -157,7 +207,7 @@ export default function TabThreeScreen() {
           keyboardType="numeric" 
           placeholder="Pasos" 
           placeholderTextColor={theme.colors.border}
-          value={objetivo.diario?.toString()}
+          value={prevInfo?.objetivo?.diario?.pasos?.toString() ?? undefined}
           onChangeText={setObjectiveInSteps}
           style={[styles.input, themedStyles.input, themedStyles.showWhenObjectiveInSteps]} 
         />
@@ -166,8 +216,9 @@ export default function TabThreeScreen() {
         </ThemedText>
         <TextInput 
           keyboardType="numeric"
-          placeholder="Kilómetros"
+          placeholder="Kms"
           placeholderTextColor={theme.colors.border}
+          value={prevInfo.objetivo?.diario?.kms?.toString() ?? undefined}
           onChangeText={setObjectiveInKilometers}
           style={[styles.input, themedStyles.input, themedStyles.hideWhenObjectiveInSteps]} 
         />
@@ -183,7 +234,7 @@ export default function TabThreeScreen() {
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]} onPress={handleObjectiveUnits}>
           <MaterialIcons name="autorenew" size={24} style={[themedStyles.buttonDefaultText]} />
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={setObjectives}>
+        <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={setDailyObjectives}>
           <FontAwesome6 name="add" size={24} style={[ themedStyles.buttonPrimaryText ]} />
         </TouchableOpacity>
         <TouchableOpacity onPress={showUnitConversionInfo}>
