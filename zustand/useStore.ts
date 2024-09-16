@@ -7,8 +7,9 @@ import { persist, devtools, createJSONStorage } from 'zustand/middleware'
 
 type UseStoreProps = {
   registro: Registro;
-  setRegistro: (registro: Registro) => void
+  setRegistro: (registro: Registro) => void;
   historico: Registro[];
+  setHistorico: (historico: Registro[]) => void;
   agregarAHistorico: (nuevoRegistro:Registro) => void;
   idioma: Idioma;
   setIdioma: (lang:Idioma) => void;
@@ -31,10 +32,8 @@ export const useAppStore = create<UseStoreProps>()(
             pasos: 0
           },
           setRegistro: (registro) => set({ registro }),
-          historico: [{
-            fecha: dayjs(),
-            pasos: 0
-          }],
+          historico: [],
+          setHistorico: (historico) => set({ historico }),
           agregarAHistorico: (nuevoRegistro) => set((state) => ({ historico: [...state.historico, nuevoRegistro] })),
           // MULTIIDIOMA
           idioma: 'Español',

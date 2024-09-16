@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useDay } from "../useDay";
 import dayjs from "dayjs";
 import { useAppStore } from "@/zustand/useStore";
+import { RESET } from "@/app/helpers/helpers";
 
 export const useSteps = () => {
   const [isPedometerAvailable, setIsPedometerAvailable] = useState('checking');
@@ -11,22 +12,19 @@ export const useSteps = () => {
   const [currentStepCount, setCurrentStepCount] = useState(0);
 
   const { day } = useDay();
-  const { registro, setRegistro, agregarAHistorico } = useAppStore();
+  const { registro, setRegistro, historico, agregarAHistorico } = useAppStore();
 
   useEffect(() => {
     setRegistro({
       ...registro,
-      pasos: currentStepCount,
+      pasos: ((registro.pasos || 0) + currentStepCount),
     })
   }, [currentStepCount])
 
   useEffect(() => {
     if (!day.isSame(registro.fecha, 'day')) {
       agregarAHistorico(registro);
-      setRegistro({
-        pasos: 0,
-        fecha: day
-      })
+      RESET.registro();
     }
   }, [day])
 
@@ -57,6 +55,9 @@ export const useSteps = () => {
       }
     }
   }, []);
+
+  console.log(registro)
+  console.log(historico);
 
   return useMemo(() => ({ isPedometerAvailable, pastStepCount, currentStepCount: registro.pasos }), [isPedometerAvailable, pastStepCount, registro.pasos])
 }

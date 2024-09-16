@@ -1,6 +1,7 @@
 import { useAppStore } from "@/zustand/useStore"
 import { UnidadObjetivo } from "../types"
 import { CalculationError } from "@/errors/Error"
+import dayjs from "dayjs"
 
 export function throttle (mainFunction: (...params:any[]) => void, delay: number) {
   let timerFlag: NodeJS.Timeout | null = null
@@ -40,3 +41,10 @@ export function objectiveConvert (value:number, type: UnidadObjetivo) {
 
   return resultValue
 }
+
+export const RESET = (() => {
+  return {
+    registro: () => useAppStore.getState().setRegistro({ fecha: dayjs(), pasos: 0 }),
+    historico: () => useAppStore.getState().setHistorico([]),
+  }
+})()
