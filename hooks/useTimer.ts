@@ -1,6 +1,12 @@
 import { useEffect, useState, useRef } from "react";
 
-export const useTimer = (limit: number = 1) => {
+/**
+ * 
+ * @param timerDelay Delay entre actualizaciones, en SEGUNDOS
+ * @param limit Si está seteado, se reinician los segundos al llegar a este valor
+ * @returns 
+ */
+export const useTimer = (timerDelay: number = 1, limit: number = 1) => {
     const [seconds, setSeconds] = useState(1);
     const accumulatedSeconds = useRef(0);
 
@@ -11,7 +17,7 @@ export const useTimer = (limit: number = 1) => {
                 accumulatedSeconds.current += 1;
                 return newSeconds;
             });
-        }, 1000);
+        }, timerDelay * 1000);
 
         return () => clearInterval(interval);
     }, [limit]);

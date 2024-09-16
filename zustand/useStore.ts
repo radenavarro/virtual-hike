@@ -9,7 +9,7 @@ type UseStoreProps = {
   registro: Registro;
   setRegistro: (registro: Registro) => void
   historico: Registro[];
-  agregarAHistorico?: (nuevoRegistro:Registro) => void;
+  agregarAHistorico: (nuevoRegistro:Registro) => void;
   idioma: Idioma;
   setIdioma: (lang:Idioma) => void;
   datosUser: DatosUser;
