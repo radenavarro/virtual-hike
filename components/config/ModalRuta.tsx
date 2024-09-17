@@ -5,6 +5,7 @@ import { FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { ThemedView } from "../ThemedView";
 import { useState } from "react";
 import { useAppStore } from "@/zustand/useStore";
+import { BloquesCrearRuta } from "./BloquesCrearRuta";
 
 /**
  * Componente Modal que se encarga de las rutas. Entiéndase como un partial.
@@ -13,7 +14,6 @@ import { useAppStore } from "@/zustand/useStore";
  * @return {JSX.Element} Componente Modal + Botón que lo habilita
  */
 export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
-  const [routeObjectiveInSteps, setrouteObjectiveInSteps] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [showListRutas, setShowListRutas] = useState(false)
   const [selectedRuta, setSelectedRuta] = useState<string | undefined>(undefined)
@@ -71,12 +71,6 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
     inputBorder: {
       borderColor: theme.colors.border
     },
-    showWhenRouteObjectiveInSteps: {
-      display: routeObjectiveInSteps ? "flex" : "none"
-    },
-    hideWhenRouteObjectiveInSteps: {
-      display: !routeObjectiveInSteps ? "flex" : "none"
-    },
     closeButton: { 
       width: 48, height: 48, backgroundColor: theme.colors.background,
       display: "flex", flexDirection: "row", flexWrap: "nowrap", justifyContent: "center", alignItems: "center"
@@ -85,14 +79,6 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
       borderColor: theme.colors.border, borderWidth: 1, padding: 10, borderRadius: 8
     }
   })
-
-  function handleRouteObjectiveUnits () {
-    setrouteObjectiveInSteps(!routeObjectiveInSteps)
-  }
-
-  function setRouteObjectives () {
-
-  }
 
   function toggleRutas () { setShowListRutas(!showListRutas) }
 
@@ -205,51 +191,7 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
                 />
               </ThemedView>
 
-              <ThemedView style={[styles.elementContainer, {justifyContent: "space-between"}]}>
-                <View style={styles.elementBlock}>
-                  <TextInput
-                    keyboardType="numeric"
-                    placeholder="Pasos"
-                    placeholderTextColor={theme.colors.border}
-                    style={[styles.input, themedStyles.inputBorder, themedStyles.showWhenRouteObjectiveInSteps]}
-                  />
-                  <ThemedText style={[themedStyles.showWhenRouteObjectiveInSteps]}>Pasos</ThemedText>
-                  <TextInput
-                    keyboardType="numeric"
-                    placeholder="Kilómetros"
-                    placeholderTextColor={theme.colors.border}
-                    style={[styles.input, themedStyles.inputBorder, themedStyles.hideWhenRouteObjectiveInSteps]}
-                  />
-                  <ThemedText style={[themedStyles.hideWhenRouteObjectiveInSteps]}>Kms</ThemedText>
-                </View>
-                <View style={styles.elementBlock}>
-                  <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-                    <MaterialIcons name="delete-outline" size={24} style={[themedStyles.buttonDefaultText]} />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]} onPress={handleRouteObjectiveUnits}>
-                    <MaterialIcons name="autorenew" size={24} style={[themedStyles.buttonDefaultText]} />
-                  </TouchableOpacity>
-                  <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={setRouteObjectives}>
-                    <FontAwesome6 name="add" size={24} style={[themedStyles.buttonPrimaryText]} />
-                  </TouchableOpacity>
-                </View>
-              </ThemedView>
-
-              <ThemedView style={styles.elementContainer}>
-                <ThemedText type="defaultSemiBold">Días para completar la ruta: </ThemedText>
-                <TextInput
-                  keyboardType="numeric"
-                  placeholder="Nº días"
-                  placeholderTextColor={theme.colors.border}
-                  style={[styles.input, themedStyles.inputBorder]}
-                />
-                <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-                  <MaterialIcons name="delete-outline" size={24} style={[themedStyles.buttonDefaultText]} />
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]}>
-                  <FontAwesome6 name="add" size={24} style={[themedStyles.buttonPrimaryText]} />
-                </TouchableOpacity>
-              </ThemedView>
+              <BloquesCrearRuta selectedRuta={selectedRuta} />
             </View>
           </View>      
         </View>

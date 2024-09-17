@@ -11,7 +11,7 @@ import { useAppStore } from '@/zustand/useStore';
 
 export const Pasos = () => {
   const { registro } = useAppStore()
-  const {template} = useTemplate('tabs/index')
+  const { template } = useTemplate('tabs/index')
 
   const theme = useTheme()
 
