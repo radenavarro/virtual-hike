@@ -1,7 +1,6 @@
-import { ReactElement, ReactNode, useEffect, useRef, useState } from "react"
+import { ReactNode } from "react"
 import { ThemedView } from "../ThemedView"
-import { Animated, StyleSheet, Easing, ImageBackground, Dimensions, View } from "react-native"
-import { ImageError } from "@/errors/Error"
+import { StyleSheet } from "react-native"
 import { AutoscrollImage } from "./AutoscrollImage"
 
 /**

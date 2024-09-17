@@ -20,17 +20,18 @@ export const AutoscrollImage = (
   }: AutoscrollImageProps
 ) => {
   const imageRef = useRef(new Animated.Value(0)).current
+  const animation = Animated.timing(
+    imageRef,
+    {
+      toValue: -speed,
+      duration: duration,
+      useNativeDriver: true,
+      easing: Easing.linear
+    }
+  )
 
   function move (element: Animated.Value, speed: number = 0) {
-    Animated.timing(
-      element,
-      {
-        toValue: -speed,
-        duration: duration,
-        useNativeDriver: true,
-        easing: Easing.linear
-      }
-    ).start(() => {
+    animation.start(() => {
       // Resetear la posición cuando llegue al final, e inmediatamente iniciar la siguiente animación para simular movimiento constante hacia la izquierda
       element.setValue(0);
       move(element, speed);
