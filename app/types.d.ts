@@ -22,6 +22,7 @@ type CustomColors = {
         border: string;
         background: string;
     };
+    newSplitBg?: string;
 }
 
 export type CustomTheme = Theme & {colors: Theme["colors"] & CustomColors}
@@ -58,6 +59,20 @@ export interface TemplateIndex extends Template {
         stepCounterText: string;
         pastStepCounterText: string;
         pedometerDisabledText: string;
+    }
+}
+
+export interface TemplateModalRuta extends Template {
+    validationErrorMessages: {
+        splitErrorTitle: string;
+        noName: string;
+        noKm: string;
+        noDuration: string;
+        kmBelowZero: string;
+        durationZeroOrLess: string;
+        nameEmpty: string;
+        nameInSplits: string;
+        kmInSplits: string;
     }
 }
 

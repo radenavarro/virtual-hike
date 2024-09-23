@@ -5,6 +5,7 @@ import { ExternalLink } from '@/components/ExternalLink';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import Toast from 'react-native-root-toast';
 // CUSTOM HOOKS
 import { useTheme } from '@/hooks/useTheme';
 // STORE
@@ -13,8 +14,8 @@ import { useAppStore } from '@/zustand/useStore';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { ModalRuta } from '@/components/config/ModalRuta';
 import { MaterialIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+// HELPERS
 import { objectiveConvert } from '../helpers/helpers';
-import Toast from 'react-native-root-toast';
 
 export default function TabThreeScreen() {
   const [measureSteps, setMeasureSteps] = useState(true)

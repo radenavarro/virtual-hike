@@ -8,10 +8,11 @@ import { useSteps } from '@/hooks/home/useSteps';
 import { useSaveSteps } from '@/hooks/home/useSaveSteps';
 import { useNewDayBehaviour } from '@/hooks/home/useNewDayBehaviour';
 import { useAppStore } from '@/zustand/useStore';
+import { TemplateIndex } from '@/app/types';
 
 export const Pasos = () => {
   const { registro } = useAppStore()
-  const { template } = useTemplate('tabs/index')
+  const { template } = useTemplate<TemplateIndex>('tabs/index')
 
   const theme = useTheme()
 

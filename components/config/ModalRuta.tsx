@@ -7,6 +7,8 @@ import { useState } from "react";
 import { useAppStore } from "@/zustand/useStore";
 import { BloquesCrearRuta } from "./BloquesCrearRuta";
 
+import { RootSiblingParent } from "react-native-root-siblings";
+
 /**
  * Componente Modal que se encarga de las rutas. Entiéndase como un partial.
  *
@@ -25,7 +27,7 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
   const themedStyles = StyleSheet.create({
     modalWrapper: {
       minWidth: "100%",
-      minHeight: "100%",
+      height: "100%",
       backgroundColor: "rgba(0, 0, 0, 0.8)",
     },
     modal: {
@@ -45,7 +47,8 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
     },
     modalBody: {
       backgroundColor: theme.colors.background,
-      padding: 10
+      padding: 10,
+      flex: 1
     },
     buttonPrimary: {
       backgroundColor: theme.colors.button?.primary?.color,
@@ -120,81 +123,85 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
         onRequestClose={otherProps.onRequestClose || hideModalRutas}
         {...otherProps}
       >
-        <View style={[themedStyles.modalWrapper]}>
-          <View style={[themedStyles.modal]}>
-            {/* Título */}
-            <View style={[themedStyles.modalSuperiorBar]}>
-              <ThemedText type="subtitle">Gestión de rutas</ThemedText>
-              <TouchableOpacity style={[themedStyles.closeButton]} onPress={hideModalRutas}>
-                <Ionicons name="close" size={24} style={[themedStyles.buttonDefaultText]} />
-              </TouchableOpacity>
-            </View>
+        {/* RootSiblingParent ya está en la raíz de la app por lo que EN TEORÍA no debería hacer falta aquí, PERO se debe añadir 
+        para que las notificaciones puedan aparecer en el modal. De lo contrario, no se ven */}
+        <RootSiblingParent>
+          <View style={[themedStyles.modalWrapper]}>
+            <View style={[themedStyles.modal]}>
+              {/* Título */}
+              <View style={[themedStyles.modalSuperiorBar]}>
+                <ThemedText type="subtitle">Gestión de rutas</ThemedText>
+                <TouchableOpacity style={[themedStyles.closeButton]} onPress={hideModalRutas}>
+                  <Ionicons name="close" size={24} style={[themedStyles.buttonDefaultText]} />
+                </TouchableOpacity>
+              </View>
 
-            <View style={[themedStyles.modalBody]}>
-              {/* Visor de ruta */}
-              <ThemedView style={[styles.elementContainer, {justifyContent: "space-between"}]}>
-                <View style={[styles.elementBlock]}>
-                  <ThemedText>Ruta actual: </ThemedText>
-                  <ThemedText 
-                    numberOfLines={1} 
-                    ellipsizeMode="tail"
-                    style={{maxWidth: 180}}
-                  >
-                    {selectedRuta ? ruta.find(ruta => ruta.uuid === selectedRuta)?.nombre : "Ninguna"}
-                  </ThemedText>
-                </View>
-                <View style={[styles.elementBlock]}>
-                  <TouchableOpacity 
-                    disabled={!selectedRuta} 
-                    onPress={deselectRuta} 
-                    style={[
-                      styles.roundButton, themedStyles.buttonDefault, 
-                      {backgroundColor: selectedRuta ? theme.colors.button?.default?.color : theme.colors.button?.default?.disabledColor}
-                    ]}>
-                    <MaterialIcons 
-                      name="delete-outline" 
-                      size={24} 
+              <View style={[themedStyles.modalBody]}>
+                {/* Visor de ruta */}
+                <ThemedView style={[styles.elementContainer, {justifyContent: "space-between"}]}>
+                  <View style={[styles.elementBlock]}>
+                    <ThemedText>Ruta actual: </ThemedText>
+                    <ThemedText 
+                      numberOfLines={1} 
+                      ellipsizeMode="tail"
+                      style={{maxWidth: 180}}
+                    >
+                      {selectedRuta ? ruta.find(ruta => ruta.uuid === selectedRuta)?.nombre : "Ninguna"}
+                    </ThemedText>
+                  </View>
+                  <View style={[styles.elementBlock]}>
+                    <TouchableOpacity 
+                      disabled={!selectedRuta} 
+                      onPress={deselectRuta} 
                       style={[
-                        themedStyles.buttonDefaultText, 
-                        {color: selectedRuta ? theme.colors.button?.default?.text : theme.colors.button?.default?.disabledText}
-                      ]} 
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity disabled={!selectedRuta} onPress={confirmDeleteRuta} style={[styles.roundButton, themedStyles.buttonDanger]}>                  
-                    <MaterialIcons name="delete-forever" size={24} style={themedStyles.buttonDangerText} />
-                  </TouchableOpacity>
-                </View> 
-              </ThemedView>
-
-              {/* Carga de ruta */}
-              <ThemedView style={[styles.elementContainer]}>
-                <View style={[styles.elementBlock]}>
-                  <ThemedText>Cargar ruta: </ThemedText>
-                  <TouchableOpacity onPress={toggleRutas} style={[styles.roundButton, themedStyles.buttonDefault]}>
-                    <MaterialIcons name="upload-file" size={24} style={[themedStyles.buttonDefaultText]} />
-                  </TouchableOpacity>
-                </View>
-              </ThemedView>
-
-              {/* Lista de rutas */}
-              <ThemedView style={[styles.elementContainer, {display: showListRutas ? "flex" : "none"}]}>
-                <FlatList 
-                  style={{height: 100, width: "100%"}}
-                  keyExtractor={(item) => item.uuid}
-                  data={ruta}
-                  numColumns={4}
-                  renderItem={({item}) => (
-                    <TouchableOpacity style={themedStyles.rutaItem} onPress={() => selectRuta(item.uuid)}>
-                      <ThemedText>{item.nombre}</ThemedText>
+                        styles.roundButton, themedStyles.buttonDefault, 
+                        {backgroundColor: selectedRuta ? theme.colors.button?.default?.color : theme.colors.button?.default?.disabledColor}
+                      ]}>
+                      <MaterialIcons 
+                        name="delete-outline" 
+                        size={24} 
+                        style={[
+                          themedStyles.buttonDefaultText, 
+                          {color: selectedRuta ? theme.colors.button?.default?.text : theme.colors.button?.default?.disabledText}
+                        ]} 
+                      />
                     </TouchableOpacity>
-                  )}
-                />
-              </ThemedView>
+                    <TouchableOpacity disabled={!selectedRuta} onPress={confirmDeleteRuta} style={[styles.roundButton, themedStyles.buttonDanger]}>                  
+                      <MaterialIcons name="delete-forever" size={24} style={themedStyles.buttonDangerText} />
+                    </TouchableOpacity>
+                  </View> 
+                </ThemedView>
 
-              <BloquesCrearRuta selectedRuta={selectedRuta} />
-            </View>
-          </View>      
-        </View>
+                {/* Carga de ruta */}
+                <ThemedView style={[styles.elementContainer]}>
+                  <View style={[styles.elementBlock]}>
+                    <ThemedText>Cargar ruta: </ThemedText>
+                    <TouchableOpacity onPress={toggleRutas} style={[styles.roundButton, themedStyles.buttonDefault]}>
+                      <MaterialIcons name="upload-file" size={24} style={[themedStyles.buttonDefaultText]} />
+                    </TouchableOpacity>
+                  </View>
+                </ThemedView>
+
+                {/* Lista de rutas */}
+                <ThemedView style={[styles.elementContainer, {display: showListRutas ? "flex" : "none"}]}>
+                  <FlatList 
+                    style={{height: 100, width: "100%"}}
+                    keyExtractor={(item) => item.uuid}
+                    data={ruta}
+                    numColumns={4}
+                    renderItem={({item}) => (
+                      <TouchableOpacity style={themedStyles.rutaItem} onPress={() => selectRuta(item.uuid)}>
+                        <ThemedText>{item.nombre}</ThemedText>
+                      </TouchableOpacity>
+                    )}
+                  />
+                </ThemedView>
+
+                <BloquesCrearRuta selectedRuta={selectedRuta} />
+              </View>
+            </View>      
+          </View>
+        </RootSiblingParent>
       </Modal>
     </>
   )}

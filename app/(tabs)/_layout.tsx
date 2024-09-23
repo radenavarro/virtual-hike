@@ -17,7 +17,7 @@ export default function TabLayout() {
   const theme = useTheme()
   const colors = theme.colors
   
-  const { template }:{template: Template} = useTemplate('tabs/layout')
+  const { template } = useTemplate<TemplateTabLayout>('tabs/layout')
 
   return (
     <Tabs

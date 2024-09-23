@@ -38,6 +38,7 @@ export const DarkThemeColors: CustomTheme = {
         stepCounter: {
             border: "rgb(125, 125, 125)",
             background: "rgb(100, 100, 100)"
-        }
+        },
+        newSplitBg: "rgba(255, 255, 255, 0.1)"
     }
 }
