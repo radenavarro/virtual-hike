@@ -13,6 +13,7 @@ type CustomColors = {
         primary: Color;
         danger: Color;
         warning: Color;
+        success: Color;
         default: Color;
     };
     tint: string;
@@ -64,6 +65,10 @@ export interface TemplateIndex extends Template {
 }
 
 export interface TemplateModalRuta extends Template {
+    validationMessages: {
+        splitAdded: string;
+        splitEdited: string;
+    };
     validationErrorMessages: {
         splitErrorTitle: string;
         noName: string;
@@ -75,7 +80,7 @@ export interface TemplateModalRuta extends Template {
         nameInSplits: string;
         kmInSplits: string;
         overlappingSplits: string;
-    }
+    };
 }
 
 // STORE

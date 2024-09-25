@@ -25,6 +25,12 @@ export const LightThemeColors: CustomTheme = {
                 text: "rgb(244, 244, 244)",
                 disabledText: "rgb(189, 186, 137)"
             },
+            success: {
+                color: "rgb(13, 148, 15)",
+                disabledColor: "rgb(14, 100, 1)",
+                text: "rgb(244, 244, 244)",
+                disabledText: "rgb(145, 189, 137)"
+            },
             default: {
                 color: "rgb(216, 216, 216)",
                 disabledColor: "rgba(0, 0, 0, 0)",

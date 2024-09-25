@@ -1,6 +1,10 @@
 import { TemplateModalRuta } from "@/app/types";
 
 export const english:TemplateModalRuta = {
+    validationMessages: {
+        splitAdded: "Split added",
+        splitEdited: "The split has been modified",
+    },
     validationErrorMessages: {
         splitErrorTitle: "Split error",
         noName: "There is no name",

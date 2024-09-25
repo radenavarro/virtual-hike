@@ -1,5 +1,5 @@
 import { useAppStore } from "@/zustand/useStore"
-import { UnidadObjetivo } from "../types"
+import { Split, UnidadObjetivo } from "../types"
 import { CalculationError } from "@/errors/Error"
 import dayjs from "dayjs"
 
@@ -44,6 +44,26 @@ export function objectiveConvert (value:number, type: UnidadObjetivo) {
 
 export function isBetween (value: number, min: number, max: number, includeBoundaries: boolean = true) {
   return includeBoundaries ? value >= min && value <= max : value > min && value < max
+}
+
+export function getAllOverlappingsInSplits(splits:Split[]) {
+  let overlappings:Split[] = [];
+
+  for (let i = 0; i < splits.length; i++) {
+    for (let j = i + 1; j < splits.length; j++) {
+      const a = splits[i];
+      const b = splits[j];
+
+      if (
+        (a.km < b.km + b.duracion && a.km + a.duracion > b.km)
+        || (b.km < a.km + a.duracion && b.km + b.duracion > a.km)
+      ) {
+        overlappings = [...overlappings, a, b];
+      }
+    }
+  }
+
+  return [...new Set(overlappings)];
 }
 
 export const RESET = (() => {

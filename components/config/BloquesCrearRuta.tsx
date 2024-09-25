@@ -8,7 +8,7 @@ import { useAppStore } from "@/zustand/useStore";
 import { Ruta, Split, TemplateModalRuta } from "@/app/types";
 import Toast from "react-native-root-toast";
 import { useTemplate } from "@/hooks/useTemplate";
-import { isBetween } from "@/app/helpers/helpers";
+import { getAllOverlappingsInSplits } from "@/app/helpers/helpers";
 import { produce } from "immer";
 
 const initialTemp = {val: "", idx: 0}
@@ -121,7 +121,20 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
    * Valida antes de añadir un nuevo split
    */
   function handleAddNewSplit(): void {
-    const validatedSplit = validateCurrentSplit()
+    const splitIsValid = validateCurrentSplit()
+    if (splitIsValid) {
+      // TODO: Anadir split a la ruta
+      Toast.show(template.validationMessages.splitAdded, {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.CENTER,
+        backgroundColor: theme.colors.button?.success?.color,
+        hideOnPress: true
+      })
+    }
+  }
+
+  function handleChangeSplit() {
+
   }
 
   /**
@@ -176,8 +189,9 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
 
   function validateCurrentSplit() {
     if (!currentSplit) return false
+    const parsedCurrentSplit = {...currentSplit, km: Number(currentSplit.km), duracion: Number(currentSplit.duracion)}
     const failedValidations = []
-    const overlappingSplits = findOverlappingSplits(currentRuta?.splits)
+    const overlappingSplits = findOverlappingSplits([...currentRuta?.splits || [], parsedCurrentSplit])
     
     const validations = [
       {condition: (!currentSplit.km && currentSplit.km !== 0),                          name: template.validationErrorMessages.noKm}, 
@@ -202,7 +216,7 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
         backgroundColor: theme.colors.button.danger.disabledColor,
         hideOnPress: true
       })
-    }
+    } else return true
   }
 
   function existsInCurrentSplits(value:string, key: Exclude<keyof typeof currentSplit, "sprites">) {
@@ -223,27 +237,8 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
    */
   function findOverlappingSplits(allCurrentSplits: Split[] | undefined) {
     if (!allCurrentSplits) return []
-    
-    const overlappingSplits = (() => {
-      let splits = []
-      for (let split of allCurrentSplits) {
-        splits.push(...splitOverlaps(split, allCurrentSplits))
-      }
-      return [...new Set(splits)]
-    })()
-    return overlappingSplits
-  }
-
-  function splitOverlaps (split: Split, allCurrentSplits: Split[]) {
-    return allCurrentSplits?.filter((s) => {
-      return (
-        // isBetween(split.km, s.km, s.km + s.duracion, false) 
-        // || isBetween(split.km + split.duracion, s.km, s.km + s.duracion, false)
-        isBetween(s.km, split.km, split.km + split.duracion, false)
-        || isBetween(s.km + s.duracion, split.km, split.km + split.duracion, false)
-        && (s !== split)
-      )
-    })
+    let splits = getAllOverlappingsInSplits(allCurrentSplits) || []
+    return splits
   }
 
   return (
