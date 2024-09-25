@@ -8,11 +8,17 @@ import { useAppStore } from "@/zustand/useStore";
 import { Ruta, Split, TemplateModalRuta } from "@/app/types";
 import Toast from "react-native-root-toast";
 import { useTemplate } from "@/hooks/useTemplate";
+import { isBetween } from "@/app/helpers/helpers";
+import { produce } from "immer";
+
+const initialTemp = {val: "", idx: 0}
 
 export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | undefined }) => {
   const [routeObjectiveInSteps, setrouteObjectiveInSteps] = useState(true)
   const [currentRuta, setCurrentRuta] = useState<Ruta | undefined>(undefined)
   const [currentSplit, setCurrentSplit] = useState<Split>({ nombre: "", km: 0, duracion: 0 })
+
+  const [temporalInput, setTemporalInput] = useState({...initialTemp})
   
   const theme = useTheme();
   const { ruta } = useAppStore();
@@ -21,7 +27,6 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
   useEffect(() => {
     setCurrentRuta(ruta?.find((r) => r.uuid === selectedRuta))
   }, [selectedRuta])
-  
   
   const themedStyles = StyleSheet.create({
     modalWrapper: {
@@ -102,12 +107,69 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
   }
 
   // SPLIT HANDLERS
+
+  /**
+   * Maneja los inputs de nuevo split
+   * @param value 
+   * @param key 
+   */
   function handleChangeNewSplit(value: string, key: keyof typeof currentSplit): void {
     setCurrentSplit({ ...currentSplit, [key]: value })
   }
 
+  /**
+   * Valida antes de añadir un nuevo split
+   */
   function handleAddNewSplit(): void {
     const validatedSplit = validateCurrentSplit()
+  }
+
+  /**
+   * Cambia el valor de inputs numéricos.
+   * @param key 
+   * @param index 
+   * @returns 
+   */
+  function handleChangeNumeric(key: Exclude<keyof typeof currentSplit, "sprites" | "nombre">, index: number) {  
+    if (!currentRuta || !currentRuta.splits) return
+
+    setCurrentRuta(
+      produce((draft) => {
+        if (draft && draft.splits) {
+          draft.splits[index][key] = typeof temporalInput.val === "number"
+            ? temporalInput.val 
+            : (Number(temporalInput.val) || draft.splits[index][key]);
+        }
+      })
+    )
+    setTemporalInput(initialTemp);
+  }
+
+  /**
+   * Cambia el valor del input de nombre.
+   * @param index 
+   * @returns 
+   */
+  const handleChangeNombre = (index: number) => {
+    if (!currentRuta || !currentRuta.splits) return
+
+    setCurrentRuta(
+      produce((draft) => {
+        if (draft && draft.splits) {
+          draft.splits[index].nombre = temporalInput.val || draft.splits[index].nombre;
+        }
+      })
+    )
+    setTemporalInput(initialTemp);
+  }
+
+  /**
+   * Cambia el valor del input que se esté editando.
+   * @param text 
+   * @param index 
+   */
+  function handleChangeTemp(text: string, index: number) {
+    setTemporalInput({ val: text, idx: index });
   }
 
   // VALIDATION
@@ -115,6 +177,8 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
   function validateCurrentSplit() {
     if (!currentSplit) return false
     const failedValidations = []
+    const overlappingSplits = findOverlappingSplits(currentRuta?.splits)
+    
     const validations = [
       {condition: (!currentSplit.km && currentSplit.km !== 0),                          name: template.validationErrorMessages.noKm}, 
       {condition: (!currentSplit.duracion && currentSplit.duracion !== 0),              name: template.validationErrorMessages.noDuration}, 
@@ -124,16 +188,17 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
       {condition: currentSplit.nombre.length === 0,                                     name: template.validationErrorMessages.nameEmpty},
       {condition: existsInCurrentSplits(currentSplit.km.toString(), "km"),              name: template.validationErrorMessages.kmInSplits},
       {condition: existsInCurrentSplits(currentSplit.nombre.toString(), "nombre"),      name: template.validationErrorMessages.nameInSplits},
+      {condition: overlappingSplits.length > 0,                                         name: template.validationErrorMessages.overlappingSplits + overlappingSplits.map(s => s.nombre)?.join(", ")},
     ]
+
     for (const validation of validations) {
       if (validation.condition) failedValidations.push(validation.name)
     }
-    console.log(currentSplit)
-    console.log(failedValidations)
+
     if (failedValidations.length > 0) {
-      Toast.show(`${template.validationErrorMessages.splitErrorTitle}: ${failedValidations.join(", ")}`, {
+      Toast.show(`${template.validationErrorMessages.splitErrorTitle}: ${failedValidations.join("\n\n")}`, {
         position: Toast.positions.CENTER,
-        duration: Toast.durations.LONG,
+        duration: 2000 + (failedValidations.length * 1000),
         backgroundColor: theme.colors.button.danger.disabledColor,
         hideOnPress: true
       })
@@ -143,7 +208,7 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
   function existsInCurrentSplits(value:string, key: Exclude<keyof typeof currentSplit, "sprites">) {
     // Keys string
     if (isNaN(Number(value))) {
-      return currentRuta?.splits?.some((s) => s[key] === value)
+      return currentRuta?.splits?.some((s) => (s[key] as string)?.toLowerCase() === value?.toLowerCase())
     } 
     // Keys numericas
     else {
@@ -151,12 +216,38 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
     }
   }
 
-  function keyOverlaps(key: Exclude<keyof typeof currentSplit, "nombre" | "sprites">) {
+  /**
+   * Determina si entre los splits hay overlapping causado por incorrectos valores de km y duracion en alguno de ellos.
+   * Devuelve los splits con problemas de overlapping.
+   * @param key string
+   */
+  function findOverlappingSplits(allCurrentSplits: Split[] | undefined) {
+    if (!allCurrentSplits) return []
     
+    const overlappingSplits = (() => {
+      let splits = []
+      for (let split of allCurrentSplits) {
+        splits.push(...splitOverlaps(split, allCurrentSplits))
+      }
+      return [...new Set(splits)]
+    })()
+    return overlappingSplits
+  }
+
+  function splitOverlaps (split: Split, allCurrentSplits: Split[]) {
+    return allCurrentSplits?.filter((s) => {
+      return (
+        // isBetween(split.km, s.km, s.km + s.duracion, false) 
+        // || isBetween(split.km + split.duracion, s.km, s.km + s.duracion, false)
+        isBetween(s.km, split.km, split.km + split.duracion, false)
+        || isBetween(s.km + s.duracion, split.km, split.km + split.duracion, false)
+        && (s !== split)
+      )
+    })
   }
 
   return (
-    <ScrollView style={{ flex: 1 }}>
+    <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
       <ThemedView style={[styles.elementContainer, {justifyContent: "space-between"}]}>
         <View style={styles.elementBlock}>
           <ThemedText style={themedStyles.showWhenRouteObjectiveInSteps}>Nombre de la ruta: </ThemedText>
@@ -185,6 +276,7 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
           <FontAwesome6 name="add" size={24} style={[themedStyles.buttonPrimaryText]} />
         </TouchableOpacity>
       </ThemedView>
+
       {/* SPLITS */}
       <ThemedView style={[styles.elementContainer]}>
         <View style={styles.elementBlock}>
@@ -200,7 +292,9 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
               placeholder="Nombre"
               placeholderTextColor={theme.colors.border}
               style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
-              value={split.nombre}
+              defaultValue={split.nombre}
+              onChangeText={(text) => handleChangeTemp(text, index)}
+              onBlur={() => handleChangeNombre(index)}
             />
           </ThemedView>
           <ThemedView style={[styles.elementContainer]}>
@@ -210,7 +304,9 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
               keyboardType="numeric"
               placeholderTextColor={theme.colors.border}
               style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
-              value={split.km?.toString()}
+              defaultValue={split.km?.toString()}
+              onChangeText={(text) => handleChangeTemp(text, index)}
+              onBlur={() => handleChangeNumeric("km", index)}
             />
           </ThemedView>
           <ThemedView style={[styles.elementContainer]}>

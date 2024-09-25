@@ -11,5 +11,6 @@ export const english:TemplateModalRuta = {
         nameEmpty: "The name cannot be empty",
         nameInSplits: "The name cannot be in the splits",
         kmInSplits: "The km cannot be in the splits",
+        overlappingSplits: "There is overlapping in the splits: ",
     }
 }

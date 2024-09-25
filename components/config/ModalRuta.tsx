@@ -87,7 +87,10 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
 
   function showModalRutas () { setShowModal(true) }
 
-  function hideModalRutas () { setShowModal(false) }
+  function hideModalRutas () { 
+    deselectRuta()
+    setShowModal(false) 
+  }
 
   function selectRuta (uuid:string) { setSelectedRuta(uuid) }
 

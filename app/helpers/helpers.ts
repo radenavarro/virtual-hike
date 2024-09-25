@@ -42,6 +42,10 @@ export function objectiveConvert (value:number, type: UnidadObjetivo) {
   return resultValue
 }
 
+export function isBetween (value: number, min: number, max: number, includeBoundaries: boolean = true) {
+  return includeBoundaries ? value >= min && value <= max : value > min && value < max
+}
+
 export const RESET = (() => {
   return {
     registro: () => useAppStore.getState().setRegistro({ fecha: dayjs(), pasos: 0 }),

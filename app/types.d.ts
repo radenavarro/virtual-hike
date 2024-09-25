@@ -12,6 +12,7 @@ type CustomColors = {
     button: {
         primary: Color;
         danger: Color;
+        warning: Color;
         default: Color;
     };
     tint: string;
@@ -73,6 +74,7 @@ export interface TemplateModalRuta extends Template {
         nameEmpty: string;
         nameInSplits: string;
         kmInSplits: string;
+        overlappingSplits: string;
     }
 }
 

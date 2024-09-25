@@ -19,6 +19,12 @@ export const DarkThemeColors: CustomTheme = {
                 text: "rgb(244, 244, 244)",
                 disabledText: "rgb(189, 137, 137)"
             },
+            warning: {
+                color: "rgb(148, 139, 13)",
+                disabledColor: "rgb(122, 114, 0)",
+                text: "rgb(244, 244, 244)",
+                disabledText: "rgb(189, 186, 137)"
+            },
             default: {
                 color: "rgb(255 255 255 / 0.2)",
                 disabledColor: "rgba(0, 0, 0, 0)",
