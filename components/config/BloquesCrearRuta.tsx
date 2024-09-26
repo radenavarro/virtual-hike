@@ -12,22 +12,23 @@ import { getAllOverlappingsInSplits } from "@/app/helpers/helpers";
 import { produce } from "immer";
 
 const initialTemp = {val: "", idx: 0}
+const initialSplit = { nombre: "", km: 0, duracion: 0 }
 
-export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | undefined }) => {
+export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selectedRuta: string | undefined; itemHasBeenPressed: boolean }) => {
   const [routeObjectiveInSteps, setrouteObjectiveInSteps] = useState(true)
   const [currentRuta, setCurrentRuta] = useState<Ruta | undefined>(undefined)
-  const [currentSplit, setCurrentSplit] = useState<Split>({ nombre: "", km: 0, duracion: 0 })
+  const [currentSplit, setCurrentSplit] = useState<Split>(initialSplit)
 
   const [temporalInput, setTemporalInput] = useState({...initialTemp})
   
   const theme = useTheme();
-  const { ruta } = useAppStore();
+  const { ruta, addRuta, updateRuta } = useAppStore();
   const { template } = useTemplate<TemplateModalRuta>("tabs/config/modalRuta")
 
   useEffect(() => {
     setCurrentRuta(ruta?.find((r) => r.uuid === selectedRuta))
-  }, [selectedRuta])
-  
+  }, [selectedRuta, !!itemHasBeenPressed])
+
   const themedStyles = StyleSheet.create({
     modalWrapper: {
       minWidth: "100%",
@@ -90,7 +91,7 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
     rutaItem: {
       borderColor: theme.colors.border, borderWidth: 1, padding: 10, borderRadius: 8
     },
-    split: {
+    separator: {
       borderBottomWidth: 1, borderBottomColor: theme.colors.border
     },
     newSplit: {
@@ -104,6 +105,71 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
 
   function setRouteObjectives () {
 
+  }
+
+  // RUTA HANDLERS
+
+  /**
+   * Handler de input de nombre
+   * 
+   * @param value - Nombre de la ruta
+   */
+  function handleChangeNombreRuta (value: string) {
+    setCurrentRuta(
+      produce((draft) => ({...draft, nombre: value}))
+    )
+  }
+
+  /**
+   * Handler de input de días
+   * 
+   * @param value - Número de días
+   */
+  function handleChangeNumDias (value: string) {
+    setCurrentRuta(
+      produce((draft) => ({...draft, dias: parseInt(value)}))
+    )
+  }
+
+  /**
+   * Vacía los campos de ruta sin deseleccionar la misma
+   * 
+   * @returns void
+   */
+  function emptyRutaFields () {
+    if (!currentRuta) return
+    const { uuid } = currentRuta
+    const emptyRutaExceptUUID = { uuid, nombre: undefined, dias: undefined, splits: [] }
+    setCurrentRuta(emptyRutaExceptUUID)
+  }
+
+  /**
+   * Crea una nueva ruta en la store y muestra un toast de confirmación
+   */
+  function createRuta () {
+    if (currentRuta) {
+      addRuta(currentRuta)
+      Toast.show(template.validationMessages.rutaAdded, {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.CENTER,
+        backgroundColor: theme.colors.button?.success?.disabledColor,
+      })
+    }
+  }
+
+  /**
+   * Actualiza la ruta en la store y muestra un toast de confirmación
+   * 
+   * @returns void
+   */
+  function editRuta () {
+    if (!currentRuta) return
+    updateRuta(currentRuta)
+    Toast.show(template.validationMessages.rutaEdited, {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.CENTER,
+      backgroundColor: theme.colors.button?.success?.disabledColor,
+    })
   }
 
   // SPLIT HANDLERS
@@ -122,8 +188,15 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
    */
   function handleAddNewSplit(): void {
     const splitIsValid = validateCurrentSplit()
-    if (splitIsValid) {
-      // TODO: Anadir split a la ruta
+    if (splitIsValid && currentRuta && currentSplit) {
+      const parsedCurrentSplit = {...currentSplit, km: Number(currentSplit.km), duracion: Number(currentSplit.duracion)}
+      const modifiedRuta = {
+        ...currentRuta,
+        splits: [...currentRuta?.splits || [], parsedCurrentSplit]
+      }
+      updateRuta(modifiedRuta)
+      setCurrentRuta(modifiedRuta)
+      setCurrentSplit(initialSplit)
       Toast.show(template.validationMessages.splitAdded, {
         duration: Toast.durations.LONG,
         position: Toast.positions.CENTER,
@@ -131,10 +204,6 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
         hideOnPress: true
       })
     }
-  }
-
-  function handleChangeSplit() {
-
   }
 
   /**
@@ -187,6 +256,11 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
 
   // VALIDATION
 
+  /**
+   * Función validadora de splits
+   * 
+   * @returns true si la ruta es válida, false si no
+   */
   function validateCurrentSplit() {
     if (!currentSplit) return false
     const parsedCurrentSplit = {...currentSplit, km: Number(currentSplit.km), duracion: Number(currentSplit.duracion)}
@@ -219,6 +293,13 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
     } else return true
   }
 
+  /**
+   * Determina si un valor ya existe en los splits
+   * 
+   * @param value 
+   * @param key 
+   * @returns 
+   */
   function existsInCurrentSplits(value:string, key: Exclude<keyof typeof currentSplit, "sprites">) {
     // Keys string
     if (isNaN(Number(value))) {
@@ -249,7 +330,9 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
           <TextInput
             placeholder="Nombre"
             placeholderTextColor={theme.colors.border}
-            style={[styles.input, themedStyles.inputBorder, { flex: 1 }]}
+            style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
+            value={currentRuta?.nombre ?? undefined}
+            onChangeText={handleChangeNombreRuta}
           />
         </View>
       </ThemedView>
@@ -260,110 +343,123 @@ export const BloquesCrearRuta = ({ selectedRuta }: { selectedRuta: string | unde
           keyboardType="numeric"
           placeholder="Nº días"
           placeholderTextColor={theme.colors.border}
-          style={[styles.input, themedStyles.inputBorder]}
+          style={[styles.input, themedStyles.inputBorder, {color: theme.colors.text}]}
+          value={currentRuta?.dias?.toString() ?? undefined}
+          onChangeText={handleChangeNumDias}
         />
       </ThemedView>
-      <ThemedView style={[styles.elementContainer, styles.justifyCenter]}>
-        <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
+      <ThemedView style={[styles.elementContainer, styles.justifyCenter, themedStyles.separator, {paddingBottom: 20}]}>
+        <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]} onPress={emptyRutaFields}>
           <MaterialIcons name="delete-outline" size={24} style={[themedStyles.buttonDefaultText]} />
         </TouchableOpacity>
-        <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]}>
-          <FontAwesome6 name="add" size={24} style={[themedStyles.buttonPrimaryText]} />
-        </TouchableOpacity>
-      </ThemedView>
-
-      {/* SPLITS */}
-      <ThemedView style={[styles.elementContainer]}>
-        <View style={styles.elementBlock}>
-          <ThemedText type="defaultSemiBold">Splits:</ThemedText>
-        </View>
-      </ThemedView>
-
-      {(currentRuta?.splits && currentRuta?.splits?.length > 0) && currentRuta.splits.map((split, index) => (
-        <ThemedView key={index + JSON.stringify(split)} style={[styles.split, themedStyles.split, {display: "flex", flexDirection: "column"}]}>
-          <ThemedView style={[styles.elementContainer]}>
-            <ThemedText>Nombre: </ThemedText>
-            <TextInput 
-              placeholder="Nombre"
-              placeholderTextColor={theme.colors.border}
-              style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
-              defaultValue={split.nombre}
-              onChangeText={(text) => handleChangeTemp(text, index)}
-              onBlur={() => handleChangeNombre(index)}
-            />
-          </ThemedView>
-          <ThemedView style={[styles.elementContainer]}>
-            <ThemedText>Comienza en el km: </ThemedText>
-            <TextInput 
-              placeholder="Km"
-              keyboardType="numeric"
-              placeholderTextColor={theme.colors.border}
-              style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
-              defaultValue={split.km?.toString()}
-              onChangeText={(text) => handleChangeTemp(text, index)}
-              onBlur={() => handleChangeNumeric("km", index)}
-            />
-          </ThemedView>
-          <ThemedView style={[styles.elementContainer]}>
-            <ThemedText>Duración en kms: </ThemedText>
-            <TextInput 
-              placeholder="Duración en kms"
-              keyboardType="numeric"
-              placeholderTextColor={theme.colors.border}
-              style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
-              value={split.duracion?.toString()}
-            />
-          </ThemedView>
-          <ThemedView style={[styles.elementContainer]}>
-            <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-              <MaterialIcons name="edit" size={24} style={themedStyles.buttonDefaultText} />
-            </TouchableOpacity>
-          </ThemedView>
-        </ThemedView>
-      ))}
-      {/* SECCIÓN NUEVO SPLIT */}
-      <ThemedView style={[styles.split, themedStyles.newSplit, {display: "flex", flexDirection: "column"}]}>
-        <ThemedView style={[styles.elementContainer, styles.themedViewInheritor]}>
-          <ThemedText>Nombre: </ThemedText>
-          <TextInput 
-            placeholder="Nombre"
-            placeholderTextColor={theme.colors.border}
-            style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
-            value={currentSplit.nombre}
-            onChangeText={(ev) => handleChangeNewSplit(ev, "nombre")}
-          />
-        </ThemedView>
-        <ThemedView style={[styles.elementContainer, styles.themedViewInheritor]}>
-          <ThemedText>Comienza en el km: </ThemedText>
-          <TextInput 
-            placeholder="Km"
-            keyboardType="numeric"
-            placeholderTextColor={theme.colors.border}
-            style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
-            value={currentSplit.km?.toString()}
-            onChangeText={(ev) => handleChangeNewSplit(ev, "km")}
-          />
-        </ThemedView>
-        <ThemedView style={[styles.elementContainer, styles.themedViewInheritor]}>
-          <ThemedText>Duración en kms: </ThemedText>
-          <TextInput 
-            placeholder="Duración en kms"
-            keyboardType="numeric"
-            placeholderTextColor={theme.colors.border}
-            style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
-            value={currentSplit.duracion?.toString()}
-            onChangeText={(ev) => handleChangeNewSplit(ev, "duracion")}
-          />
-        </ThemedView>
-        <ThemedView style={[styles.elementContainer, styles.themedViewInheritor, styles.justifyCenter]}>
-          <ThemedText>
-            Añadir este split: 
-          </ThemedText>
-          <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={handleAddNewSplit}>
+        {currentRuta?.uuid && (
+          <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={editRuta}>
+            <FontAwesome6 name="save" size={24} style={[themedStyles.buttonPrimaryText]} />
+          </TouchableOpacity>
+        )}
+        {!currentRuta?.uuid && (
+          <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={createRuta}>
             <FontAwesome6 name="add" size={24} style={[themedStyles.buttonPrimaryText]} />
           </TouchableOpacity>
-        </ThemedView>
+        )}
       </ThemedView>
+
+      {currentRuta?.uuid && (
+        <>
+          {/* SPLITS */}
+          <ThemedView style={[styles.elementContainer]}>
+            <View style={styles.elementBlock}>
+              <ThemedText type="defaultSemiBold">Splits:</ThemedText>
+            </View>
+          </ThemedView>
+
+          {(currentRuta?.splits && currentRuta?.splits?.length > 0) && currentRuta.splits.map((split, index) => (
+            <ThemedView key={index + JSON.stringify(split)} style={[styles.split, themedStyles.separator, {display: "flex", flexDirection: "column"}]}>
+              <ThemedView style={[styles.elementContainer]}>
+                <ThemedText>Nombre: </ThemedText>
+                <TextInput 
+                  placeholder="Nombre"
+                  placeholderTextColor={theme.colors.border}
+                  style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
+                  defaultValue={split.nombre}
+                  onChangeText={(text) => handleChangeTemp(text, index)}
+                  onBlur={() => handleChangeNombre(index)}
+                />
+              </ThemedView>
+              <ThemedView style={[styles.elementContainer]}>
+                <ThemedText>Comienza en el km: </ThemedText>
+                <TextInput 
+                  placeholder="Km"
+                  keyboardType="numeric"
+                  placeholderTextColor={theme.colors.border}
+                  style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
+                  defaultValue={split.km?.toString()}
+                  onChangeText={(text) => handleChangeTemp(text, index)}
+                  onBlur={() => handleChangeNumeric("km", index)}
+                />
+              </ThemedView>
+              <ThemedView style={[styles.elementContainer]}>
+                <ThemedText>Duración en kms: </ThemedText>
+                <TextInput 
+                  placeholder="Duración en kms"
+                  keyboardType="numeric"
+                  placeholderTextColor={theme.colors.border}
+                  style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
+                  value={split.duracion?.toString()}
+                />
+              </ThemedView>
+              <ThemedView style={[styles.elementContainer]}>
+                <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
+                  <MaterialIcons name="edit" size={24} style={themedStyles.buttonDefaultText} />
+                </TouchableOpacity>
+              </ThemedView>
+            </ThemedView>
+          ))}
+          {/* SECCIÓN NUEVO SPLIT */}
+          <ThemedView style={[styles.split, themedStyles.newSplit, {display: "flex", flexDirection: "column"}]}>
+            <ThemedView style={[styles.elementContainer, styles.themedViewInheritor]}>
+              <ThemedText>Nombre: </ThemedText>
+              <TextInput 
+                placeholder="Nombre"
+                placeholderTextColor={theme.colors.border}
+                style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
+                value={currentSplit.nombre}
+                onChangeText={(ev) => handleChangeNewSplit(ev, "nombre")}
+              />
+            </ThemedView>
+            <ThemedView style={[styles.elementContainer, styles.themedViewInheritor]}>
+              <ThemedText>Comienza en el km: </ThemedText>
+              <TextInput 
+                placeholder="Km"
+                keyboardType="numeric"
+                placeholderTextColor={theme.colors.border}
+                style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
+                value={currentSplit.km?.toString()}
+                onChangeText={(ev) => handleChangeNewSplit(ev, "km")}
+              />
+            </ThemedView>
+            <ThemedView style={[styles.elementContainer, styles.themedViewInheritor]}>
+              <ThemedText>Duración en kms: </ThemedText>
+              <TextInput 
+                placeholder="Duración en kms"
+                keyboardType="numeric"
+                placeholderTextColor={theme.colors.border}
+                style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
+                value={currentSplit.duracion?.toString()}
+                onChangeText={(ev) => handleChangeNewSplit(ev, "duracion")}
+              />
+            </ThemedView>
+            <ThemedView style={[styles.elementContainer, styles.themedViewInheritor, styles.justifyCenter]}>
+              <ThemedText>
+                Añadir este split: 
+              </ThemedText>
+              <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={handleAddNewSplit}>
+                <FontAwesome6 name="add" size={24} style={[themedStyles.buttonPrimaryText]} />
+              </TouchableOpacity>
+            </ThemedView>
+          </ThemedView>
+        </>
+      )}
     </ScrollView>
   )
 }
@@ -401,7 +497,8 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
     borderWidth: 1,
-    minWidth: 120
+    minWidth: 120,
+    flex: 1
   },
   roundButton: {
     display: 'flex',

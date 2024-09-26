@@ -3,7 +3,7 @@ import { Alert, FlatList, Modal, ModalProps, StyleSheet, TextInput, TouchableOpa
 import { ThemedText } from "../ThemedText";
 import { FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { ThemedView } from "../ThemedView";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppStore } from "@/zustand/useStore";
 import { BloquesCrearRuta } from "./BloquesCrearRuta";
 
@@ -19,10 +19,17 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
   const [showModal, setShowModal] = useState(false)
   const [showListRutas, setShowListRutas] = useState(false)
   const [selectedRuta, setSelectedRuta] = useState<string | undefined>(undefined)
+  const [itemHasBeenPressed, setItemHasBeenPressed] = useState(false)
 
   const { ruta, addRuta, deleteRuta } = useAppStore()
 
   const theme = useTheme();
+
+  useEffect(() => {
+    setTimeout(() => {
+      setItemHasBeenPressed(false)
+    }, 1000)
+  }, [!!itemHasBeenPressed])
   
   const themedStyles = StyleSheet.create({
     modalWrapper: {
@@ -79,7 +86,10 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
       display: "flex", flexDirection: "row", flexWrap: "nowrap", justifyContent: "center", alignItems: "center"
     },
     rutaItem: {
-      borderColor: theme.colors.border, borderWidth: 1, padding: 10, borderRadius: 8
+      borderColor: theme.colors.border, borderWidth: 1, padding: 10, borderRadius: 8, maxWidth: 100
+    },
+    rutaItemText: {
+      fontSize: 10
     }
   })
 
@@ -92,7 +102,10 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
     setShowModal(false) 
   }
 
-  function selectRuta (uuid:string) { setSelectedRuta(uuid) }
+  function selectRuta (uuid:string) { 
+    setSelectedRuta(uuid)
+    setItemHasBeenPressed(true)
+  }
 
   function deselectRuta () { setSelectedRuta(undefined) }
 
@@ -108,7 +121,10 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
           },
           {
             text: "Eliminar del registro",
-            onPress: () => { deleteRuta(selectedRuta) }
+            onPress: () => { 
+              deleteRuta(selectedRuta)
+              deselectRuta()
+            }
           }
         ]
       )
@@ -188,19 +204,20 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
                 {/* Lista de rutas */}
                 <ThemedView style={[styles.elementContainer, {display: showListRutas ? "flex" : "none"}]}>
                   <FlatList 
-                    style={{height: 100, width: "100%"}}
+                    style={{minHeight: 100, width: "100%"}}
                     keyExtractor={(item) => item.uuid}
                     data={ruta}
                     numColumns={4}
+                    columnWrapperStyle={{gap: 8}}
                     renderItem={({item}) => (
-                      <TouchableOpacity style={themedStyles.rutaItem} onPress={() => selectRuta(item.uuid)}>
-                        <ThemedText>{item.nombre}</ThemedText>
+                      <TouchableOpacity style={[styles.centerVertical, themedStyles.rutaItem]} onPress={() => {selectRuta(item.uuid)}}>
+                        <ThemedText style={[themedStyles.rutaItemText]}>{item.nombre}</ThemedText>
                       </TouchableOpacity>
                     )}
                   />
                 </ThemedView>
 
-                <BloquesCrearRuta selectedRuta={selectedRuta} />
+                <BloquesCrearRuta selectedRuta={selectedRuta} itemHasBeenPressed={itemHasBeenPressed} />
               </View>
             </View>      
           </View>
@@ -251,5 +268,11 @@ const styles = StyleSheet.create({
   },
   icon: {
     lineHeight: 24
+  },
+  centerVertical: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });

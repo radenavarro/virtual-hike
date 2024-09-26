@@ -66,6 +66,8 @@ export interface TemplateIndex extends Template {
 
 export interface TemplateModalRuta extends Template {
     validationMessages: {
+        rutaAdded: string;
+        rutaEdited: string;
         splitAdded: string;
         splitEdited: string;
     };
@@ -112,8 +114,9 @@ export type Split = {
 
 export type Ruta = {
   uuid: string;
-  nombre: string;
-  duracion: number;// KMs
+  nombre: string | undefined;
+  duracion?: number | undefined;// KMs
+  dias?: number | undefined;
   splits?: Split[];
 }
 

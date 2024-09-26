@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import dayjs from 'dayjs'
 import { create } from 'zustand'
 import { persist, devtools, createJSONStorage } from 'zustand/middleware'
+import uuid from "react-native-uuid"
 
 type UseStoreProps = {
   registro: Registro;
@@ -20,6 +21,7 @@ type UseStoreProps = {
   ruta: Ruta[];
   addRuta: (nuevaRuta: Ruta) => void;
   deleteRuta: (uuid: string) => void;
+  updateRuta: (updated: Ruta) => void;
 }
 
 export const useAppStore = create<UseStoreProps>()(
@@ -49,8 +51,18 @@ export const useAppStore = create<UseStoreProps>()(
           },
           setObjetivo: (objetivo) => set({ objetivo }),
           ruta: rutasDefault,
-          addRuta: (ruta) => set((state) => ({ ruta: [...state.ruta, ruta] })),
+          addRuta: (ruta) => set((state) => {
+            const newUuid = uuid.v4().toString()
+            return {ruta: [...state.ruta, {...ruta, uuid: newUuid}]}
+          }),
           deleteRuta: (uuid) => set((state) => ({ ruta: state.ruta.filter(ruta => ruta.uuid !== uuid) })),
+          updateRuta: (updated) => set((state) => {
+            const { uuid } = updated
+            const index = state.ruta.findIndex(ruta => ruta.uuid === uuid)
+            const updatedState = {...state}
+            updatedState.ruta[index] = updated
+            return updatedState
+          })
         }),
         {
           name: 'appstore',

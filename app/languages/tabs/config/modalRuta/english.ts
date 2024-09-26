@@ -2,6 +2,8 @@ import { TemplateModalRuta } from "@/app/types";
 
 export const english:TemplateModalRuta = {
     validationMessages: {
+        rutaAdded: "Route added",
+        rutaEdited: "The route has been modified",
         splitAdded: "Split added",
         splitEdited: "The split has been modified",
     },
