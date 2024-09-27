@@ -22,6 +22,8 @@ type UseStoreProps = {
   addRuta: (nuevaRuta: Ruta) => void;
   deleteRuta: (uuid: string) => void;
   updateRuta: (updated: Ruta) => void;
+  selectedRuta: string | undefined;
+  setSelectedRuta: (uuid: string | undefined) => void;
 }
 
 export const useAppStore = create<UseStoreProps>()(
@@ -62,7 +64,11 @@ export const useAppStore = create<UseStoreProps>()(
             const updatedState = {...state}
             updatedState.ruta[index] = updated
             return updatedState
-          })
+          }),
+
+          // SELECCIÓN DE RUTA
+          selectedRuta: undefined,
+          setSelectedRuta: (ruta) => set({ selectedRuta: ruta }),
         }),
         {
           name: 'appstore',

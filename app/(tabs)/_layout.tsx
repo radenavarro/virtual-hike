@@ -1,13 +1,10 @@
 import { Tabs } from 'expo-router';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-// import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { useAppStore } from '@/zustand/useStore';
-import { CustomColors, CustomTheme, Template, TemplateTabLayout } from '../types';
+import {  TemplateTabLayout } from '../types';
 import { useTemplate } from '@/hooks/useTemplate';
-import { Theme } from '@react-navigation/native';
 import { useTheme } from '@/hooks/useTheme';
 
 
@@ -36,11 +33,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="paths"
         options={{
-          title: 'Explore',
+          title: template?.pathsText,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'footsteps' : 'footsteps-outline'} color={color} />
           ),
         }}
       />

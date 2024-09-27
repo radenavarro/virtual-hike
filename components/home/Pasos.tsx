@@ -16,6 +16,9 @@ export const Pasos = () => {
 
   const theme = useTheme()
 
+  const selectedRuta = useAppStore(state => state.selectedRuta)
+  const allRutas = useAppStore(state => state.ruta)
+
   const { isPedometerAvailable, pastStepCount, currentStepCount } = useSteps()
   const { stepCounter } = theme.colors
 
@@ -23,12 +26,27 @@ export const Pasos = () => {
   useNewDayBehaviour()// Guardar en histórico a final del día y reset registro en AsyncStorage / Zustand
 
   return (
-    <ThemedView style={[{ backgroundColor: stepCounter?.background, borderColor: stepCounter?.border }, styles.container]}>
+    <ThemedView style={[
+      styles.container,
+      { 
+        backgroundColor: stepCounter?.background, 
+        borderColor: stepCounter?.border,
+        minHeight: selectedRuta ? 400 : 156
+      }, 
+    ]}>
       {
         !isPedometerAvailable && 
         <ThemedText>{ template.stepCounter?.pedometerDisabledText }</ThemedText>
       }
-      <ThemedText type="title">{ template.stepCounter?.title }</ThemedText>
+      {
+        selectedRuta && (
+          <>
+            <ThemedText type="subtitle">Ruta actual</ThemedText>
+            <ThemedText type="title">{ allRutas.find(ruta => ruta.uuid === selectedRuta)?.nombre }</ThemedText>
+          </>
+        )
+      }
+      <ThemedText type={selectedRuta ? "subtitle" : "title"}>{ template.stepCounter?.title }</ThemedText>
       <View style={{ display: "flex", flexDirection: "row", flexWrap: "nowrap", alignItems: "center" }}>
         <ThemedText type="title">{ registro.pasos } </ThemedText><ThemedText>{ template.stepCounter?.stepCounterText }</ThemedText>
       </View>
@@ -49,6 +67,5 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     gap: 16,
-    minHeight: 156
   },
 });

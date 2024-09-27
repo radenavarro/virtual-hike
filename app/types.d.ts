@@ -51,6 +51,7 @@ export interface TemplateIdioma extends Template {
 
 export interface TemplateTabLayout extends Template {
     homeText: string;
+    pathsText: string;
     configText: string;
     languageText: string;
 }
