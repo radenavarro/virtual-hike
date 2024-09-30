@@ -6,6 +6,7 @@ export const spanish:TemplateModalRuta = {
         rutaEdited: "La ruta ha sido modificada",
         splitAdded: "Split agregado",
         splitEdited: "Se ha modificado el split",
+        splitRemoved: "Split eliminado. Guarda los cambios para que estos sean aplicados",
     },
     validationErrorMessages: {
         splitErrorTitle: "Error en los splits",

@@ -96,6 +96,12 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
     },
     newSplit: {
       borderBottomWidth: 1, borderBottomColor: theme.colors.border, backgroundColor: theme.colors.newSplitBg
+    },
+    dangerBorder: {
+      borderColor: theme.colors.button.danger.color
+    },
+    dangerText: {
+      color: theme.colors.button.danger.color
     }
   })
 
@@ -254,6 +260,21 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
     setTemporalInput({ val: text, idx: index });
   }
 
+  function removeSplit(idx: number) {
+    setCurrentRuta(
+      produce((draft) => {
+        if (draft && draft.splits) {
+          draft.splits.splice(idx, 1);
+        }
+      })
+    )
+    return Toast.show(template.validationMessages.splitRemoved, {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.CENTER,
+      backgroundColor: theme.colors.button?.success?.color
+    })
+  }
+
   // VALIDATION
 
   /**
@@ -408,9 +429,10 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
                   value={split.duracion?.toString()}
                 />
               </ThemedView>
-              <ThemedView style={[styles.elementContainer]}>
-                <TouchableOpacity style={[styles.roundButton, themedStyles.buttonDefault]}>
-                  <MaterialIcons name="edit" size={24} style={themedStyles.buttonDefaultText} />
+              <ThemedView style={[styles.elementContainer, {justifyContent: "center"}]}>
+                <TouchableOpacity style={[styles.buttonWithText, themedStyles.buttonDefault, themedStyles.dangerBorder]} onPress={() => removeSplit(index)}>
+                  <ThemedText style={[themedStyles.dangerText]}>Eliminar</ThemedText>
+                  <MaterialIcons name="remove" size={24} style={[themedStyles.buttonDefaultText]} />
                 </TouchableOpacity>
               </ThemedView>
             </ThemedView>
@@ -517,5 +539,15 @@ const styles = StyleSheet.create({
   },
   themedViewInheritor: {
     backgroundColor: 'inherit',
+  },
+  buttonWithText: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 10,
+    gap: 8
   }
 });

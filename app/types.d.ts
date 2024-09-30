@@ -71,6 +71,7 @@ export interface TemplateModalRuta extends Template {
         rutaEdited: string;
         splitAdded: string;
         splitEdited: string;
+        splitRemoved: string;
     };
     validationErrorMessages: {
         splitErrorTitle: string;
