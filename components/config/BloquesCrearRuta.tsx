@@ -8,7 +8,7 @@ import { useAppStore } from "@/zustand/useStore";
 import { Ruta, Split, TemplateModalRuta } from "@/app/types";
 import Toast from "react-native-root-toast";
 import { useTemplate } from "@/hooks/useTemplate";
-import { getAllOverlappingsInSplits } from "@/app/helpers/helpers";
+import { getAllOverlappingsInSplits, GRAPHICS } from "@/app/helpers/helpers";
 import { produce } from "immer";
 
 const initialTemp = {val: "", idx: 0}
@@ -28,6 +28,9 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
   useEffect(() => {
     setCurrentRuta(ruta?.find((r) => r.uuid === selectedRuta))
   }, [selectedRuta, !!itemHasBeenPressed])
+  
+  const graphics = GRAPHICS.getFrom(["grass", "town"])
+  console.log(graphics)
 
   const themedStyles = StyleSheet.create({
     modalWrapper: {

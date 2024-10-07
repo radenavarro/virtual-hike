@@ -1,5 +1,5 @@
 import { useAppStore } from "@/zustand/useStore"
-import { Split, UnidadObjetivo } from "../types"
+import { GraphicsDirectory, Split, UnidadObjetivo } from "../types"
 import { CalculationError } from "@/errors/Error"
 import dayjs from "dayjs"
 
@@ -65,6 +65,23 @@ export function getAllOverlappingsInSplits(splits:Split[]) {
 
   return [...new Set(overlappings)];
 }
+
+export const GRAPHICS = (() => {
+  return {
+    getFrom: (directories: GraphicsDirectory[]) => {
+      let graphics: {[key in GraphicsDirectory]?: {skybox?: string, ground?: string, overlay?: string}} = {}
+
+      directories.forEach(directory => {  
+        graphics[directory] = {
+          skybox: "@assets/images/backgrounds/" + directory + "/skybox.png",
+          ground: "@assets/images/backgrounds/" + directory + "/ground.png",
+          overlay: "@assets/images/backgrounds/" + directory + "/overlay.png",
+        }
+      })
+      return graphics
+    }
+  }
+})()
 
 export const RESET = (() => {
   return {

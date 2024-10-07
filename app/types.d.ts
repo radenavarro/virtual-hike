@@ -125,3 +125,5 @@ export type Ruta = {
 // CONFIG
 
 export type UnidadObjetivo = 'pasos' | 'kms'
+
+export type GraphicsDirectory = 'grass' | 'town'
