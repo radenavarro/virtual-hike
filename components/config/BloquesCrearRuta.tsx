@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, ImageBackground, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { ThemedView } from "../ThemedView";
@@ -429,9 +429,26 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
                   value={split.duracion?.toString()}
                 />
               </ThemedView>
+              <ThemedView style={[styles.elementContainer, {flexDirection: "column", width: "100%"}]}>
+                <ThemedText style={{alignSelf: "flex-start"}}>Gráficos: </ThemedText>
+                <ThemedView style={[styles.indentLeft, styles.rowWrap]}>
+                  <TouchableOpacity style={{flex: 1}}>
+                    <ImageBackground style={[styles.thumbnail]} resizeMode={"contain"} source={require('@/assets/images/backgrounds/grass/skybox.png')} />
+                    <ThemedText>Detrás</ThemedText>
+                  </TouchableOpacity>
+                  <TouchableOpacity  style={{flex: 1}}>
+                    <ImageBackground style={[styles.thumbnail]} resizeMode={"contain"} source={require('@/assets/images/backgrounds/grass/ground.png')} />
+                    <ThemedText>Intermedio</ThemedText>
+                  </TouchableOpacity>
+                  <TouchableOpacity  style={{flex: 1}}>
+                    <ImageBackground style={[styles.thumbnail]} resizeMode={"contain"} source={require('@/assets/images/backgrounds/grass/overlay.png')} />
+                    <ThemedText>Delante</ThemedText>
+                  </TouchableOpacity>
+                </ThemedView>
+              </ThemedView>
               <ThemedView style={[styles.elementContainer, {justifyContent: "center"}]}>
                 <TouchableOpacity style={[styles.buttonWithText, themedStyles.buttonDefault, themedStyles.dangerBorder]} onPress={() => removeSplit(index)}>
-                  <ThemedText style={[themedStyles.dangerText]}>Eliminar</ThemedText>
+                  <ThemedText style={[themedStyles.dangerText]}>Eliminar split</ThemedText>
                   <MaterialIcons name="remove" size={24} style={[themedStyles.buttonDefaultText]} />
                 </TouchableOpacity>
               </ThemedView>
@@ -549,5 +566,19 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     gap: 8
+  },
+  indentLeft: {
+    marginLeft: 20,
+  },
+  rowWrap: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 8
+  },
+  thumbnail: {
+    height: 32
   }
 });
