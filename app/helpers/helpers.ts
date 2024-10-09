@@ -1,7 +1,8 @@
 import { useAppStore } from "@/zustand/useStore"
-import { GraphicsDirectory, Split, UnidadObjetivo } from "../types"
+import { GraphicObject, GraphicsDirectory, Split, UnidadObjetivo } from "../types"
 import { CalculationError } from "@/errors/Error"
 import dayjs from "dayjs"
+import { Sprites } from "@/constants/images"
 
 export function throttle (mainFunction: (...params:any[]) => void, delay: number) {
   let timerFlag: NodeJS.Timeout | null = null
@@ -69,13 +70,14 @@ export function getAllOverlappingsInSplits(splits:Split[]) {
 export const GRAPHICS = (() => {
   return {
     getFrom: (directories: GraphicsDirectory[]) => {
-      let graphics: {[key in GraphicsDirectory]?: {skybox?: string, ground?: string, overlay?: string}} = {}
-
+      let graphics: {[key in GraphicsDirectory]?: Split["sprites"]} = {}
+      
       directories.forEach(directory => {  
+        const spriteResource: Split["sprites"] = Sprites[directory]
         graphics[directory] = {
-          skybox: "@assets/images/backgrounds/" + directory + "/skybox.png",
-          ground: "@assets/images/backgrounds/" + directory + "/ground.png",
-          overlay: "@assets/images/backgrounds/" + directory + "/overlay.png",
+          skybox: spriteResource ? spriteResource.skybox : undefined,
+          ground: spriteResource ? spriteResource.ground : undefined,
+          overlay: spriteResource ? spriteResource.overlay : undefined,
         }
       })
       return graphics

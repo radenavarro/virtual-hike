@@ -1,15 +1,16 @@
-import { Image, ImageBackground, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, ImageBackground, ImageSourcePropType, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { ThemedView } from "../ThemedView";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/hooks/useTheme";
 import { useAppStore } from "@/zustand/useStore";
-import { Ruta, Split, TemplateModalRuta } from "@/app/types";
+import { Ruta, Split, SpriteType, TemplateModalRuta } from "@/app/types";
 import Toast from "react-native-root-toast";
 import { useTemplate } from "@/hooks/useTemplate";
 import { getAllOverlappingsInSplits, GRAPHICS } from "@/app/helpers/helpers";
 import { produce } from "immer";
+import { SelectGraphic } from "./SelectGraphic";
 
 const initialTemp = {val: "", idx: 0}
 const initialSplit = { nombre: "", km: 0, duracion: 0 }
@@ -30,7 +31,6 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
   }, [selectedRuta, !!itemHasBeenPressed])
   
   const graphics = GRAPHICS.getFrom(["grass", "town"])
-  console.log(graphics)
 
   const themedStyles = StyleSheet.create({
     modalWrapper: {
@@ -108,14 +108,6 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
     }
   })
 
-  function handleRouteObjectiveUnits () {
-    setrouteObjectiveInSteps(!routeObjectiveInSteps)
-  }
-
-  function setRouteObjectives () {
-
-  }
-
   // RUTA HANDLERS
 
   /**
@@ -181,7 +173,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
     })
   }
 
-  // SPLIT HANDLERS
+  // ==================== SPLIT HANDLERS ===========================
 
   /**
    * Maneja los inputs de nuevo split
@@ -252,6 +244,33 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
       })
     )
     setTemporalInput(initialTemp);
+  }
+
+  /**
+   * Cambia los sprites del split, concretamente un tipo de gráfico (skybox, ground, overlay). NO GUARDA EN LA STORE, ESO SE HACE CON EL BOTÓN GUARDAR
+   * @param type 
+   * @param source 
+   * @param index 
+   * @returns 
+   */
+  const handleChangeSprite = (type: keyof SpriteType, source: ImageSourcePropType, index: number) => {
+    if (!currentRuta || !currentRuta.splits) return
+    setCurrentRuta(
+      produce((draft) => {
+        if (draft?.splits?.[index] && !draft?.splits?.[index]?.sprites) {
+          draft.splits[index].sprites = {
+            [type]: source
+          };
+        } else if (draft?.splits?.[index] && draft?.splits?.[index]?.sprites) {
+          draft.splits[index].sprites[type] = source
+        }
+      })
+    )
+    Toast.show(template.validationMessages.spriteChanged, {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.CENTER,
+      backgroundColor: theme.colors.button?.success?.color
+    })
   }
 
   /**
@@ -430,21 +449,35 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
                   placeholderTextColor={theme.colors.border}
                   style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
                   value={split.duracion?.toString()}
+                  onChangeText={(text) => handleChangeTemp(text, index)}
+                  onBlur={() => handleChangeNumeric("duracion", index)}
                 />
               </ThemedView>
               <ThemedView style={[styles.elementContainer, {flexDirection: "column", width: "100%"}]}>
                 <ThemedText style={{alignSelf: "flex-start"}}>Gráficos: </ThemedText>
                 <ThemedView style={[styles.indentLeft, styles.rowWrap]}>
-                  <TouchableOpacity style={{flex: 1}}>
-                    <ImageBackground style={[styles.thumbnail]} resizeMode={"contain"} source={require('@/assets/images/backgrounds/grass/skybox.png')} />
-                    <ThemedText>Detrás</ThemedText>
+                  <TouchableOpacity style={{flex: 1, position: 'relative'}}>
+                    <SelectGraphic 
+                      options={graphics} 
+                      labelText={"Detrás"}
+                      resizeMode={"contain"}
+                      source={ split.sprites?.skybox || require('@/assets/images/backgrounds/grass/skybox.png') }
+                      type={"skybox"}
+                      onSelect={(dir, source) => handleChangeSprite(dir, source, index)}
+                    />
                   </TouchableOpacity>
-                  <TouchableOpacity  style={{flex: 1}}>
-                    <ImageBackground style={[styles.thumbnail]} resizeMode={"contain"} source={require('@/assets/images/backgrounds/grass/ground.png')} />
-                    <ThemedText>Intermedio</ThemedText>
+                  <TouchableOpacity  style={{flex: 1, position: 'relative'}}>
+                    <SelectGraphic 
+                      options={graphics} 
+                      labelText={"Intermedio"}
+                      resizeMode={"contain"}
+                      source={ split.sprites?.ground || require('@/assets/images/backgrounds/grass/ground.png') }
+                      type={"ground"}
+                      onSelect={(dir, source) => handleChangeSprite(dir, source, index)}
+                    />
                   </TouchableOpacity>
-                  <TouchableOpacity  style={{flex: 1}}>
-                    <ImageBackground style={[styles.thumbnail]} resizeMode={"contain"} source={require('@/assets/images/backgrounds/grass/overlay.png')} />
+                  <TouchableOpacity  style={{flex: 1, position: 'relative'}}>
+                    <ImageBackground style={[styles.thumbnail]} resizeMode={"contain"} source={ split.sprites?.overlay || require('@/assets/images/backgrounds/grass/overlay.png')} />
                     <ThemedText>Delante</ThemedText>
                   </TouchableOpacity>
                 </ThemedView>

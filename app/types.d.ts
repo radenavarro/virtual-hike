@@ -1,4 +1,5 @@
 import { Theme } from "@react-navigation/native"
+import { ImageSourcePropType } from "react-native";
 
 export type Idioma = 'Español' | 'English'
 
@@ -72,6 +73,7 @@ export interface TemplateModalRuta extends Template {
         splitAdded: string;
         splitEdited: string;
         splitRemoved: string;
+        spriteChanged: string;
     };
     validationErrorMessages: {
         splitErrorTitle: string;
@@ -103,15 +105,17 @@ export type Objetivo = {
   ruta?: number;
 }
 
+export type SpriteType = {
+  skybox?: ImageSourcePropType;
+  ground?: ImageSourcePropType;
+  overlay?: ImageSourcePropType;
+}
+
 export type Split = {
   nombre: string;
   km: number;
   duracion: number;
-  sprites?: {
-    skybox: string;
-    ground: string;
-    overlay: string;
-  }
+  sprites?: SpriteType;
 }
 
 export type Ruta = {
@@ -127,3 +131,7 @@ export type Ruta = {
 export type UnidadObjetivo = 'pasos' | 'kms'
 
 export type GraphicsDirectory = 'grass' | 'town'
+
+export type GraphicObject = {
+    [key in GraphicsDirectory]: Split["sprites"]
+}

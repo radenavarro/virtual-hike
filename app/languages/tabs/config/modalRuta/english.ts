@@ -2,11 +2,12 @@ import { TemplateModalRuta } from "@/app/types";
 
 export const english:TemplateModalRuta = {
     validationMessages: {
-        rutaAdded: "Route added",
-        rutaEdited: "The route has been modified",
+        rutaAdded: "Path added",
+        rutaEdited: "All path modifications have been applied",
         splitAdded: "Split added",
         splitEdited: "The split has been modified",
         splitRemoved: "Split removed. Save changes in order to apply them",
+        spriteChanged: "Sprite changed. Save changes in order to apply them",
     },
     validationErrorMessages: {
         splitErrorTitle: "Split error",
