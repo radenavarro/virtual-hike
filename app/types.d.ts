@@ -66,6 +66,16 @@ export interface TemplateIndex extends Template {
     }
 }
 
+export interface TemplateConfig extends Template {
+    header: string;
+    heightDescription: string;
+    heightText: string;
+    objectiveDescription: string;
+    objectiveText: string;
+    pathDescription: string;
+    pathText: string;
+}
+
 export interface TemplateModalRuta extends Template {
     validationMessages: {
         rutaAdded: string;

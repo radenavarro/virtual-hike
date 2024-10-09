@@ -16,6 +16,8 @@ import { ModalRuta } from '@/components/config/ModalRuta';
 import { MaterialIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 // HELPERS
 import { objectiveConvert } from '../helpers/helpers';
+import { useTemplate } from '@/hooks/useTemplate';
+import { TemplateConfig } from '../types';
 
 export default function TabThreeScreen() {
   const [measureSteps, setMeasureSteps] = useState(true)
@@ -35,6 +37,8 @@ export default function TabThreeScreen() {
       ruta: objetivo.ruta
     }
   })
+
+  const { template } = useTemplate<TemplateConfig>('tabs/config')
 
   const theme = useTheme()
   const themedStyles = StyleSheet.create({
@@ -176,12 +180,12 @@ export default function TabThreeScreen() {
       headerImage={<Ionicons size={310} name="settings" style={styles.headerImage} />}
     >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Configuración</ThemedText>
+        <ThemedText type="title">{template.header}</ThemedText>
       </ThemedView>
 
-      <ThemedText>La altura se utiliza para el cálculo de la distancia recorrida en kilómetros.</ThemedText>
+      <ThemedText>{template.heightDescription}</ThemedText>
       <ThemedView style={[styles.elementContainer]}>
-        <ThemedText type="defaultSemiBold">Altura: </ThemedText>
+        <ThemedText type="defaultSemiBold">{template.heightText}: </ThemedText>
         <TextInput 
           keyboardType="numeric" 
           placeholder="Centímetros" 
@@ -201,9 +205,9 @@ export default function TabThreeScreen() {
         </TouchableOpacity>
       </ThemedView>
 
-      <ThemedText>Añade la cantidad objetivo de pasos que quieres hacer al día. O la cantidad de kilómetros; la decisión es tuya.</ThemedText>
+      <ThemedText>{template.objectiveDescription}</ThemedText>
       <ThemedView style={[styles.elementContainer]}>
-        <ThemedText type="defaultSemiBold">Objetivo: </ThemedText>
+        <ThemedText type="defaultSemiBold">{template.objectiveText}: </ThemedText>
         <TextInput 
           keyboardType="numeric" 
           placeholder="Pasos" 
@@ -243,9 +247,9 @@ export default function TabThreeScreen() {
         </TouchableOpacity>
       </ThemedView>
     
-      <ThemedText>¿Quieres establecer una ruta?. Puedes añadirla a mano, o seleccionar alguna de las que ya hay.</ThemedText>
+      <ThemedText>{template.pathDescription}</ThemedText>
       <ThemedView style={styles.elementContainer}>
-        <ThemedText type="defaultSemiBold">Gestionar rutas: </ThemedText>
+        <ThemedText type="defaultSemiBold">{template.pathText}: </ThemedText>
         <ModalRuta
           animationType="slide"
           transparent
