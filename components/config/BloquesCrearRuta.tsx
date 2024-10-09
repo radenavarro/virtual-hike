@@ -453,6 +453,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
                   onBlur={() => handleChangeNumeric("duracion", index)}
                 />
               </ThemedView>
+
               <ThemedView style={[styles.elementContainer, {flexDirection: "column", width: "100%"}]}>
                 <ThemedText style={{alignSelf: "flex-start"}}>Gráficos: </ThemedText>
                 <ThemedView style={[styles.indentLeft, styles.rowWrap]}>
@@ -477,8 +478,14 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
                     />
                   </TouchableOpacity>
                   <TouchableOpacity  style={{flex: 1, position: 'relative'}}>
-                    <ImageBackground style={[styles.thumbnail]} resizeMode={"contain"} source={ split.sprites?.overlay || require('@/assets/images/backgrounds/grass/overlay.png')} />
-                    <ThemedText>Delante</ThemedText>
+                    <SelectGraphic 
+                      options={graphics} 
+                      labelText={"Delante"}
+                      resizeMode={"contain"}
+                      source={ split.sprites?.overlay || require('@/assets/images/backgrounds/grass/overlay.png') }
+                      type={"overlay"}
+                      onSelect={(dir, source) => handleChangeSprite(dir, source, index)}
+                    />
                   </TouchableOpacity>
                 </ThemedView>
               </ThemedView>
