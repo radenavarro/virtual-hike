@@ -1,10 +1,10 @@
 import { ImageError } from "@/errors/Error";
 import { useEffect, useRef } from "react";
-import { Animated, Easing, ImageBackground, StyleSheet, View } from "react-native"
+import { Animated, Easing, ImageBackground, ImageSourcePropType, StyleSheet, View } from "react-native"
 
 type AutoscrollImageProps = {
   zIndex: number;
-  source: any;
+  source: ImageSourcePropType;
   duration: number;
   speed: number;
   resizeMode?: "cover" | "contain" | "stretch" | "repeat" | "center";
@@ -20,29 +20,37 @@ export const AutoscrollImage = (
   }: AutoscrollImageProps
 ) => {
   const imageRef = useRef(new Animated.Value(0)).current
-  const animation = Animated.timing(
-    imageRef,
-    {
-      toValue: -speed,
-      duration: duration,
-      useNativeDriver: true,
-      easing: Easing.linear
-    }
+  const animation = Animated.loop(
+    Animated.timing(
+      imageRef,
+      {
+        toValue: -speed,
+        duration: duration,
+        useNativeDriver: true,
+        easing: Easing.linear
+      }
+    ), {iterations: -1}
   )
 
   function move (element: Animated.Value, speed: number = 0) {
-    animation.start(() => {
-      // Resetear la posición cuando llegue al final, e inmediatamente iniciar la siguiente animación para simular movimiento constante hacia la izquierda
-      element.setValue(0);
-      move(element, speed);
-    })
+    animation.start()
   }
+
+  // useEffect(() => {
+  //   console.log("cambia source")
+  //   animation.stop()
+  //   imageRef.setValue(0)
+  //   move(imageRef, speed)
+  // }, [source])
 
   useEffect(() => {
     setTimeout(() => {
+      console.log("cambia source")
+      animation.stop()
+      imageRef.setValue(0)
       move(imageRef, speed)
     }, 100); 
-  }, [])
+  }, [source])
 
   const AnimatedBackground = Animated.createAnimatedComponent(ImageBackground)
   return (

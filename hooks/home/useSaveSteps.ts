@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react"
  * @param currentStepCount pasos dados tras abrir la app
  */
 export const useSaveSteps = (currentStepCount: number) => {
-  const { registro, setRegistro } = useAppStore();
+  const { registro, setRegistro, pasosRuta, selectedRuta, setPasosRuta } = useAppStore();
   const prev = useRef(currentStepCount);
   
   useEffect(() => {
@@ -20,6 +20,9 @@ export const useSaveSteps = (currentStepCount: number) => {
       ...registro,
       pasos: ((registro.pasos || 0) + diff),
     })
+    if (selectedRuta) {
+      setPasosRuta((pasosRuta || 0) + diff)
+    }
     prev.current = currentStepCount
   }
 }

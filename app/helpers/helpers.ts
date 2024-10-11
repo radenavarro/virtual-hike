@@ -24,14 +24,14 @@ export function throttle (mainFunction: (...params:any[]) => void, delay: number
  * @param type La unidad que estás enviando. Por ejemplo, si envías pasos, la conversión se hará en kms
  * 
  */
-export function objectiveConvert (value:number, type: UnidadObjetivo) {
+export function objectiveConvert (value:number, type: UnidadObjetivo):number {
   let resultValue = 0;
   const height = useAppStore.getState()?.datosUser?.altura
   if (!height) throw new CalculationError("CalculationError: La altura no ha sido configurada o es inválida")
   const stepLength = height * 0.414 / 100;// 0.414 es una constante, los valores más exactos serían 0.413 para mujeres y 0.415 para hombres pero aquí se usa un promedio
 
   if (type === "pasos") {
-    resultValue = (value * stepLength) / 1000;
+    resultValue = parseFloat((value * stepLength / 1000).toFixed(2));
   }
   if (type === "kms") {
     resultValue = Math.round((value * 1000) / stepLength);
@@ -40,7 +40,7 @@ export function objectiveConvert (value:number, type: UnidadObjetivo) {
   if (isNaN(resultValue)) 
     throw new CalculationError("CalculationError: La conversión de unidades objetivo no ha sido correcta, el resultado no es numérico")
 
-  return resultValue
+  return resultValue;
 }
 
 export function isBetween (value: number, min: number, max: number, includeBoundaries: boolean = true) {

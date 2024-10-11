@@ -2,14 +2,18 @@ import { FlatList, TouchableOpacity, View, StyleSheet } from "react-native"
 import { ThemedText } from "../ThemedText"
 import { useTheme } from "@/hooks/useTheme"
 import { useAppStore } from "@/zustand/useStore"
+import dayjs from "dayjs"
 
 export const PathSelection = () => {
   
   const theme = useTheme()
 
+  // STORE
   const allPaths = useAppStore(state => state.ruta)
   const selectedPath = useAppStore(state => state.selectedRuta)
   const selectPath = useAppStore(state => state.setSelectedRuta)
+  const setStartingDate = useAppStore(state => state.setInicioRuta)
+  const setPathSteps = useAppStore(state => state.setPasosRuta)
 
   const handleSelectPath = (uuid: string) => {
     let selection = undefined
@@ -17,6 +21,12 @@ export const PathSelection = () => {
       selection = uuid
     }
     selectPath(selection)
+    if (selection) {
+      setStartingDate(dayjs().format('DD-MM-YYYY HH:mm'))
+    } else {
+      setStartingDate(undefined)
+      setPathSteps(0)
+    }
   }
 
   const themedStyles = StyleSheet.create({

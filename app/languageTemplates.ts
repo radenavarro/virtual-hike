@@ -7,7 +7,7 @@ import { spanish as indexSpanish } from "@/app/languages/tabs/index/spanish"
 import { spanish as modalRutaSpanish } from "./languages/tabs/config/modalRuta/spanish"
 import { english as modalRutaEnglish } from "./languages/tabs/config/modalRuta/english"
 import { spanish as configSpanish } from "./languages/tabs/config/spanish"
-import { english as configEnglish, english } from "./languages/tabs/config/english"
+import { english as configEnglish } from "./languages/tabs/config/english"
 
 export const fullAppTemplate = {
     tabs: {

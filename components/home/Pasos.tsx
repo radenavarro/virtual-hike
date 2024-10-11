@@ -8,7 +8,9 @@ import { useSteps } from '@/hooks/home/useSteps';
 import { useSaveSteps } from '@/hooks/home/useSaveSteps';
 import { useNewDayBehaviour } from '@/hooks/home/useNewDayBehaviour';
 import { useAppStore } from '@/zustand/useStore';
-import { TemplateIndex } from '@/app/types';
+import { Ruta, TemplateIndex } from '@/app/types';
+import dayjs from 'dayjs';
+import { objectiveConvert } from '@/app/helpers/helpers';
 
 export const Pasos = () => {
   const { registro } = useAppStore()
@@ -18,12 +20,24 @@ export const Pasos = () => {
 
   const selectedRuta = useAppStore(state => state.selectedRuta)
   const allRutas = useAppStore(state => state.ruta)
+  const inicioDeRuta = useAppStore(state => state.inicioRuta)
+  const pasosDeRuta = useAppStore(state => state.pasosRuta)
 
   const { isPedometerAvailable, pastStepCount, currentStepCount } = useSteps()
   const { stepCounter } = theme.colors
 
   useSaveSteps(currentStepCount)// Guardar en AsyncStorage / Zustand
   useNewDayBehaviour()// Guardar en histórico a final del día y reset registro en AsyncStorage / Zustand
+
+  function calcPercent() {
+    const rutaSel = allRutas.find(ruta => ruta.uuid === selectedRuta)
+    const duracion = rutaSel?.splits?.reduce((a, b) => a + b.duracion, 0)
+
+    if (!registro.pasos || !duracion) return 0
+    
+    const calculatedPercent = objectiveConvert(registro.pasos, 'pasos') / duracion * 100
+    return calculatedPercent > 100 ? 100 : calculatedPercent
+  }
 
   return (
     <ThemedView style={[
@@ -43,12 +57,25 @@ export const Pasos = () => {
           <>
             <ThemedText type="subtitle">Ruta actual</ThemedText>
             <ThemedText type="title">{ allRutas.find(ruta => ruta.uuid === selectedRuta)?.nombre }</ThemedText>
+            <ThemedText type='subtitle'>Iniciada: { inicioDeRuta || "" }</ThemedText>
+            <ThemedText type='subtitle'>Progreso: </ThemedText>
+            <View style={{ display: "flex", flexDirection: "row", flexWrap: "nowrap", alignItems: "center" }}>
+              <ThemedText type='title'>{pasosDeRuta || 0} </ThemedText><ThemedText>{template.stepCounter?.stepCounterText}</ThemedText>
+            </View>
+            {/* Barra de progreso */}
+            <ThemedView style={{backgroundColor: 'black', height: 10, width: '100%'}}>
+              <ThemedView style={{
+                backgroundColor: 'green', 
+                height: 10, 
+                width: `${calcPercent()}%`
+              }}></ThemedView>
+            </ThemedView>
           </>
         )
       }
-      <ThemedText type={selectedRuta ? "subtitle" : "title"}>{ template.stepCounter?.title }</ThemedText>
+      <ThemedText type={selectedRuta ? "defaultSemiBold" : "title"}>Hoy: { template.stepCounter?.title }</ThemedText>
       <View style={{ display: "flex", flexDirection: "row", flexWrap: "nowrap", alignItems: "center" }}>
-        <ThemedText type="title">{ registro.pasos } </ThemedText><ThemedText>{ template.stepCounter?.stepCounterText }</ThemedText>
+        <ThemedText type={selectedRuta ? "defaultSemiBold" : "title"}>{ registro.pasos } </ThemedText><ThemedText>{ template.stepCounter?.stepCounterText }</ThemedText>
       </View>
       
       <ThemedText>{ template.stepCounter?.pastStepCounterText }: { pastStepCount }</ThemedText>

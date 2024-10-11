@@ -24,6 +24,10 @@ type UseStoreProps = {
   updateRuta: (updated: Ruta) => void;
   selectedRuta: string | undefined;
   setSelectedRuta: (uuid: string | undefined) => void;
+  inicioRuta: string | undefined;
+  setInicioRuta: (fecha: string | undefined) => void;
+  pasosRuta: number;
+  setPasosRuta: (pasos: number) => void;
 }
 
 export const useAppStore = create<UseStoreProps>()(
@@ -66,9 +70,13 @@ export const useAppStore = create<UseStoreProps>()(
             return updatedState
           }),
 
-          // SELECCIÓN DE RUTA
+          // SELECCIÓN DE RUTA Y PASOS DE LA MISMA
           selectedRuta: undefined,
           setSelectedRuta: (ruta) => set({ selectedRuta: ruta }),
+          inicioRuta: undefined,
+          setInicioRuta: (fecha: string | undefined) => set({ inicioRuta: fecha }),
+          pasosRuta: 0,
+          setPasosRuta: (pasos: number) => set({ pasosRuta: pasos }),
         }),
         {
           name: 'appstore',
