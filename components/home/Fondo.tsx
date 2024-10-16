@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from "react"
 import { ThemedView } from "../ThemedView"
-import { StyleSheet } from "react-native"
+import { ImageSourcePropType, StyleSheet } from "react-native"
 import { AutoscrollImage } from "./AutoscrollImage"
 import { useAppStore } from "@/zustand/useStore"
 import { Ruta, SpriteType } from "@/app/types"
@@ -21,11 +21,6 @@ export const Fondo = ({children}:{children?: ReactNode}) => {
     overlay: require('@/assets/images/backgrounds/grass/overlay.png'),
   }
 
-  // useEffect(() => {
-  //   const nuevaRuta = todasLasRutas.find(ruta => ruta.uuid === uuidRutaSelecc)
-  //   if (nuevaRuta) setRutaSelecc(nuevaRuta)
-  // }, [uuidRutaSelecc])
-
   return (
     <ThemedView style={{alignItems: "center"}}>
       <ThemedView 
@@ -33,21 +28,21 @@ export const Fondo = ({children}:{children?: ReactNode}) => {
       >
         <AutoscrollImage 
           zIndex={1}
-          source={require('@/assets/images/backgrounds/grass/skybox.png')}
+          source={(fondoPorDefecto.skybox) as ImageSourcePropType}
           duration={10240 * 16}
           speed={1024}
           resizeMode={"cover"}
         />
         <AutoscrollImage 
           zIndex={10}
-          source={require('@/assets/images/backgrounds/grass/ground.png')}
+          source={(fondoPorDefecto.ground) as ImageSourcePropType}
           duration={10240 * 2}
           speed={1024}
           resizeMode={"cover"}
         />
         <AutoscrollImage
           zIndex={100}
-          source={require('@/assets/images/backgrounds/grass/overlay.png')}
+          source={(fondoPorDefecto.overlay) as ImageSourcePropType}
           duration={10240}
           speed={1024}
           resizeMode={"cover"}
