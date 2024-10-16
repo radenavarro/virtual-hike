@@ -44,9 +44,8 @@ export const Pasos = () => {
   function tiempoFaltante() {
     if (!tiempoRestante) return ''
     return (Object.entries(tiempoRestante)?.filter(([nom, valor]) => {
-      return (valor > 0 || (nom !== "meses" && nom !== "dias"))
+      return (!!valor)
     })?.map(([nom, valor]) => {
-      if (!valor || ( valor === 0)) return ''
       const capitalizedNom = nom.charAt(0).toUpperCase() + nom.slice(1)
       return `${valor} ${capitalizedNom}`
     }))?.join(", ")

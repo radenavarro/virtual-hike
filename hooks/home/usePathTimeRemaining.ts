@@ -2,12 +2,18 @@ import { useEffect, useState } from "react"
 import { useTimer } from "../useTimer";
 import { usePathTimeLimit } from "./usePathTimeLimit";
 import dayjs from "dayjs";
+import { useTemplate } from "../useTemplate";
+import { TemplateIndex } from "@/app/types";
 
 type TiempoProps = {
-  meses: number;
-  dias: number;
-  horas: number;
-  minutos: number;
+  meses?: number;
+  dias?: number;
+  horas?: number;
+  minutos?: number;
+  mes?: number;
+  dia?: number;
+  hora?: number;
+  minuto?: number;
 }
 
 export const usePathTimeRemaining = () => {
@@ -15,6 +21,7 @@ export const usePathTimeRemaining = () => {
 
   const timer = useTimer(1, 5).seconds
   const {tiempoLimiteRuta} = usePathTimeLimit()
+  const { template } = useTemplate<TemplateIndex>('tabs/index')
 
   useEffect(() => {
     if (tiempoLimiteRuta) {
@@ -25,11 +32,19 @@ export const usePathTimeRemaining = () => {
       const dias = duracion.days();
       const horas = duracion.hours();
       const minutos = duracion.minutes();
+
+      const clavesFinales = {
+        mes: meses > 1 ? template.stepCounter.dateNames.monthNamePlural.toLowerCase() : template.stepCounter.dateNames.monthName.toLowerCase(),
+        dia: dias > 1 ? template.stepCounter.dateNames.dayNamePlural.toLowerCase() : template.stepCounter.dateNames.dayName.toLowerCase(),
+        hora: horas > 1 ? template.stepCounter.dateNames.hourNamePlural.toLowerCase() : template.stepCounter.dateNames.hourName.toLowerCase(),
+        minuto: minutos > 1 ? template.stepCounter.dateNames.minuteNamePlural.toLowerCase() : template.stepCounter.dateNames.minuteName.toLowerCase()
+      }
+
       setTiempoRestante({
-        meses,
-        dias,
-        horas,
-        minutos
+        [clavesFinales.mes]: meses,
+        [clavesFinales.dia]: dias,
+        [clavesFinales.hora]: horas,
+        [clavesFinales.minuto]: minutos
       })
     }
   }, [timer])

@@ -58,12 +58,22 @@ export interface TemplateTabLayout extends Template {
 }
 
 export interface TemplateIndex extends Template {
-    stepCounter: {
-        title: string;
-        stepCounterText: string;
-        pastStepCounterText: string;
-        pedometerDisabledText: string;
+  stepCounter: {
+    title: string;
+    stepCounterText: string;
+    pastStepCounterText: string;
+    pedometerDisabledText: string;
+    dateNames: {
+      monthName: string;
+      monthNamePlural: string;
+      dayName: string;
+      dayNamePlural: string;
+      hourName: string;
+      hourNamePlural: string;
+      minuteName: string;
+      minuteNamePlural: string;
     }
+  }
 }
 
 export interface TemplateConfig extends Template {
