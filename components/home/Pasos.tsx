@@ -8,10 +8,8 @@ import { useSteps } from '@/hooks/home/useSteps';
 import { useSaveSteps } from '@/hooks/home/useSaveSteps';
 import { useNewDayBehaviour } from '@/hooks/home/useNewDayBehaviour';
 import { useAppStore } from '@/zustand/useStore';
-import { Ruta, TemplateIndex } from '@/app/types';
-import dayjs from 'dayjs';
+import { TemplateIndex } from '@/app/types';
 import { objectiveConvert } from '@/app/helpers/helpers';
-import { useEffect, useState } from 'react';
 import { usePath } from '@/hooks/home/usePath';
 
 export const Pasos = () => {
