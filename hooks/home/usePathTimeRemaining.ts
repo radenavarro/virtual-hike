@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useTimer } from "../useTimer";
 import { usePathTimeLimit } from "./usePathTimeLimit";
 import dayjs from "dayjs";
@@ -17,7 +17,7 @@ type TiempoProps = {
 }
 
 export const usePathTimeRemaining = () => {
-  const [tiempoRestante, setTiempoRestante] = useState<TiempoProps | undefined>(undefined)
+  const tiempoRestante = useRef<TiempoProps>({});
 
   const timer = useTimer(1, 5).seconds
   const {tiempoLimiteRuta} = usePathTimeLimit()
@@ -40,14 +40,17 @@ export const usePathTimeRemaining = () => {
         minuto: minutos > 1 ? template.stepCounter.dateNames.minuteNamePlural.toLowerCase() : template.stepCounter.dateNames.minuteName.toLowerCase()
       }
 
-      setTiempoRestante({
+      const tiempoPush = {
         [clavesFinales.mes]: meses,
         [clavesFinales.dia]: dias,
         [clavesFinales.hora]: horas,
         [clavesFinales.minuto]: minutos
-      })
+      }
+      if (JSON.stringify(tiempoRestante.current) !== JSON.stringify(tiempoPush)) {
+        tiempoRestante.current = tiempoPush
+      }
     }
   }, [timer])
 
-  return { tiempoRestante }
+  return ({ tiempoRestante: tiempoRestante.current })
 }

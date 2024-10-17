@@ -1,11 +1,12 @@
-import { StyleSheet, Platform } from 'react-native';
-
+import { StyleSheet } from 'react-native';
 import { Pasos } from '@/components/home/Pasos';
 import { Fondo } from '@/components/home/Fondo';
+import { CheckObjetivo } from '@/components/home/CheckObjetivo';
 
 export default function HomeScreen() {
   return (
     <Fondo>
+      <CheckObjetivo/>
       <Pasos/>
     </Fondo>
   );

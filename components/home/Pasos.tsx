@@ -1,5 +1,4 @@
-
-import { StyleSheet, Platform, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { ThemedView } from '../ThemedView';
 import { ThemedText } from '../ThemedText';
 import { useTemplate } from '@/hooks/useTemplate';

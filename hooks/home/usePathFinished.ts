@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { usePathActive } from "./usePathActive"
 import { usePathTimeRemaining } from "./usePathTimeRemaining"
 import { useAppStore } from "@/zustand/useStore"
@@ -7,8 +7,11 @@ import { objectiveConvert } from "@/app/helpers/helpers"
 type EstadosRuta = "pendiente" | "en progreso" | "terminada"
 type ExitoValores = "si" | "no" | undefined
 export const usePathFinished = () => {
-  const [success, setSuccess] = useState<ExitoValores>(undefined)
-  const [status, setStatus] = useState<EstadosRuta>("pendiente")
+  // const [success, setSuccess] = useState<ExitoValores>(undefined)
+  // const [pathStatus, setPathStatus] = useState<EstadosRuta>("pendiente")
+
+  const success = useRef<ExitoValores>(undefined)
+  const pathStatus = useRef<EstadosRuta>("pendiente")
 
   const pasosDeRuta = useAppStore(state => state.pasosRuta)
 
@@ -19,17 +22,18 @@ export const usePathFinished = () => {
     handlePathStatus()
   }, [rutaActiva, tiempoRestante])
 
-  function handlePathStatus() {
+  const handlePathStatus = useCallback(() => {
     if (!rutaActiva || !tiempoRestante) {
-      return setStatus("pendiente")
+      pathStatus.current = "pendiente"
+      return
     }
     const ultimoSplit = rutaActiva?.splits?.[rutaActiva?.splits?.length - 1]
     const duracion = (ultimoSplit?.km || 0) + (ultimoSplit?.duracion || 0)
     const kmsAndados = objectiveConvert(pasosDeRuta, 'pasos')
 
     const quedaTiempo = Object.values(tiempoRestante).some(valor => valor > 0)
-    let exito: ExitoValores = success;
-    let estadoRuta: EstadosRuta = status;
+    let exito: ExitoValores = success.current;
+    let estadoRuta: EstadosRuta = pathStatus.current;
 
     if (quedaTiempo) {
       estadoRuta = "en progreso"
@@ -45,9 +49,9 @@ export const usePathFinished = () => {
       exito = "no"
     }
 
-    if (exito !== success) setSuccess(exito)
-    if (estadoRuta !== status) setStatus(estadoRuta)
-  }
+    if (exito !== success.current) success.current = (exito)
+    if (estadoRuta !== pathStatus.current) pathStatus.current = (estadoRuta)
+  }, [pathStatus, success, rutaActiva, tiempoRestante, pasosDeRuta])
 
-  return { status, success }
+  return ({ pathStatus: pathStatus.current, success: success.current })
 }

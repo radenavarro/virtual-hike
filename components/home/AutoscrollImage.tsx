@@ -20,7 +20,7 @@ export const AutoscrollImage = (
   }: AutoscrollImageProps
 ) => {
   const imageRef = useRef(new Animated.Value(0)).current
-  const animation = Animated.loop(
+  const animation = useRef(Animated.loop(
     Animated.timing(
       imageRef,
       {
@@ -30,26 +30,17 @@ export const AutoscrollImage = (
         easing: Easing.linear
       }
     ), {iterations: -1}
-  )
+  )).current
 
   function move (element: Animated.Value, speed: number = 0) {
     animation.start()
   }
 
-  // useEffect(() => {
-  //   console.log("cambia source")
-  //   animation.stop()
-  //   imageRef.setValue(0)
-  //   move(imageRef, speed)
-  // }, [source])
-
   useEffect(() => {
-    setTimeout(() => {
-      console.log("cambia source")
-      animation.stop()
-      imageRef.setValue(0)
-      move(imageRef, speed)
-    }, 100); 
+    console.log("cambia source")
+    animation.stop()
+    imageRef.setValue(0)
+    move(imageRef, speed)
   }, [source])
 
   const AnimatedBackground = Animated.createAnimatedComponent(ImageBackground)
