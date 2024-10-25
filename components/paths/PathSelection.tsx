@@ -1,4 +1,4 @@
-import { FlatList, TouchableOpacity, View, StyleSheet } from "react-native"
+import { FlatList, TouchableOpacity, View, StyleSheet, useWindowDimensions } from "react-native"
 import { ThemedText } from "../ThemedText"
 import { useTheme } from "@/hooks/useTheme"
 import { useAppStore } from "@/zustand/useStore"
@@ -7,6 +7,7 @@ import dayjs from "dayjs"
 export const PathSelection = () => {
   
   const theme = useTheme()
+  const dimensions = useWindowDimensions()
 
   // STORE
   const allPaths = useAppStore(state => state.ruta)
@@ -32,6 +33,13 @@ export const PathSelection = () => {
   const themedStyles = StyleSheet.create({
     pathBox: {
       borderColor: theme.colors.border,
+      width: Math.floor(dimensions.width / 2) - 32,
+      display: 'flex',
+      flexDirection: 'column',
+      flexWrap: 'nowrap',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 8,
     },
     pathBoxSelected: {
       backgroundColor: theme.colors.button.success.color,
@@ -44,7 +52,7 @@ export const PathSelection = () => {
         data={allPaths}
         style={{ minHeight: 100 }}
         keyExtractor={(item) => item.uuid}
-        numColumns={4}
+        numColumns={dimensions.width >= 768 ? 4 : 2}
         columnWrapperStyle={{gap: 8}}
         renderItem={({ item }) => (
           // TODO: Preguntar si está seguro de seleccionar o deseleccionar ruta, ya que la que pudiera haber seleccionada se reseteará, perdiendo todo el progreso
