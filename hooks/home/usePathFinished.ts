@@ -40,17 +40,18 @@ export const usePathFinished = () => {
       exito = undefined
     }
 
-    if (quedaTiempo && kmsAndados >= duracion) {
+    if (quedaTiempo && (kmsAndados >= duracion)) {
       estadoRuta = "terminada"
       exito = "si"
     }
-    if (!quedaTiempo && kmsAndados < duracion) {
+
+    if (!quedaTiempo && (Object.keys(tiempoRestante).length > 0) && (kmsAndados < duracion)) {
       estadoRuta = "terminada"
       exito = "no"
     }
 
-    if (exito !== success.current) success.current = (exito)
-    if (estadoRuta !== pathStatus.current) pathStatus.current = (estadoRuta)
+    if (exito !== success.current) success.current = exito
+    if (estadoRuta !== pathStatus.current) pathStatus.current = estadoRuta
   }, [pathStatus, success, rutaActiva, tiempoRestante, pasosDeRuta])
 
   return ({ pathStatus: pathStatus.current, success: success.current })

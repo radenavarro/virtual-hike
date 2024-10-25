@@ -27,6 +27,9 @@ export const usePathTimeRemaining = () => {
     if (tiempoLimiteRuta) {
       const now = dayjs().format('DD-MM-YYYY HH:mm')
       const diferencia = tiempoLimiteRuta.diff(dayjs(now, 'DD-MM-YYYY HH:mm'))
+      if (diferencia < 0) {
+        return
+      }
       const duracion = dayjs.duration(diferencia);
       const meses = duracion.months();
       const dias = duracion.days();
