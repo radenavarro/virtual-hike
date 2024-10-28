@@ -127,8 +127,9 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
    * @param value - Número de días
    */
   function handleChangeNumDias (value: string) {
+    const diasValue = isNaN(parseInt(value)) ? undefined : parseInt(value)
     setCurrentRuta(
-      produce((draft) => ({...draft, dias: parseInt(value)}))
+      produce((draft) => ({...draft, dias: diasValue}))
     )
   }
 
