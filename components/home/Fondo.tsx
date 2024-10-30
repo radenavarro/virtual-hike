@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from "react"
+import { ReactNode, useEffect, useRef, useState } from "react"
 import { ThemedView } from "../ThemedView"
 import { ImageSourcePropType, StyleSheet } from "react-native"
 import { AutoscrollImage } from "./AutoscrollImage"
@@ -10,10 +10,19 @@ import { Ruta, SpriteType } from "@/app/types"
  * @returns 
  */
 export const Fondo = ({children}:{children?: ReactNode}) => {
-  const [rutaSelecc, setRutaSelecc] = useState<Ruta | undefined>(undefined)
+  // const [rutaSelecc, setRutaSelecc] = useState<Ruta | undefined>(undefined)
 
-  const uuidRutaSelecc = useAppStore(state => state.selectedRuta);
-  const todasLasRutas = useAppStore(state => state.ruta);
+  // const uuidRutaSelecc = useAppStore(state => state.selectedRuta);
+  // const todasLasRutas = useAppStore(state => state.ruta);
+  // const uuidRutaSelecc = useAppStore.getState().selectedRuta;
+  const uuidRutaSeleccRef = useRef<string | null>(null);
+
+  useAppStore.subscribe(
+    (state) => {
+      if (state.selectedRuta !== uuidRutaSeleccRef.current) {
+        uuidRutaSeleccRef.current = state.selectedRuta;
+      }
+    }, (state) => state.selectedRuta);
 
   const fondoPorDefecto: SpriteType = {
     skybox: require('@/assets/images/backgrounds/grass/skybox.png'),

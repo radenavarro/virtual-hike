@@ -221,8 +221,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
       produce((draft) => {
         if (draft && draft.splits) {
           draft.splits[index][key] = typeof temporalInput.val === "number"
-            ? temporalInput.val 
-            : (Number(temporalInput.val) || draft.splits[index][key]);
+            ? temporalInput.val : (Number(temporalInput.val) || 0);
         }
       })
     )
@@ -449,7 +448,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
                   keyboardType="numeric"
                   placeholderTextColor={theme.colors.border}
                   style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
-                  value={split.duracion?.toString()}
+                  defaultValue={split.duracion?.toString()}
                   onChangeText={(text) => handleChangeTemp(text, index)}
                   onBlur={() => handleChangeNumeric("duracion", index)}
                 />

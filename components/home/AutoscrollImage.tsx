@@ -16,7 +16,8 @@ export const AutoscrollImage = (
     source,
     duration = 4000,
     speed = 1024,
-    resizeMode = "cover"
+    resizeMode = "cover",
+    ...restProps
   }: AutoscrollImageProps
 ) => {
   const imageRef = useRef(new Animated.Value(0)).current
@@ -37,7 +38,6 @@ export const AutoscrollImage = (
   }
 
   useEffect(() => {
-    console.log("cambia source")
     animation.stop()
     imageRef.setValue(0)
     move(imageRef, speed)
