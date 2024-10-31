@@ -4,6 +4,7 @@ import { ImageSourcePropType, StyleSheet } from "react-native"
 import { AutoscrollImage } from "./AutoscrollImage"
 import { useAppStore } from "@/zustand/useStore"
 import { Ruta, SpriteType } from "@/app/types"
+import { usePathProgress } from "@/hooks/home/usePathProgress"
 
 /**
  * 
@@ -22,7 +23,11 @@ export const Fondo = ({children}:{children?: ReactNode}) => {
       if (state.selectedRuta !== uuidRutaSeleccRef.current) {
         uuidRutaSeleccRef.current = state.selectedRuta;
       }
-    }, (state) => state.selectedRuta);
+    }, 
+    (state) => state.selectedRuta
+  );
+
+  const { splitActual } = usePathProgress()
 
   const fondoPorDefecto: SpriteType = {
     skybox: require('@/assets/images/backgrounds/grass/skybox.png'),
@@ -32,6 +37,7 @@ export const Fondo = ({children}:{children?: ReactNode}) => {
 
   return (
     <ThemedView style={{alignItems: "center"}}>
+      {console.log(splitActual)}
       <ThemedView 
         style={styles.imageContainer} 
       >

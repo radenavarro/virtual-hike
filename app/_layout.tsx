@@ -10,6 +10,13 @@ import { DarkThemeColors } from './themes/dark';
 import { LightThemeColors } from './themes/light';
 import { StatusBar } from 'expo-status-bar';
 import { RootSiblingParent } from 'react-native-root-siblings';
+// Dayjs
+import customParseFormat from "dayjs/plugin/customParseFormat"
+import duration from 'dayjs/plugin/duration';
+import dayjs from "dayjs"
+
+dayjs.extend(duration)
+dayjs.extend(customParseFormat)
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
