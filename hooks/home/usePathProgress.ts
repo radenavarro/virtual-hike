@@ -5,16 +5,18 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { usePathActive } from "./usePathActive"
 
 export const usePathProgress = () => {
-  const splitActual = useRef<Split | undefined>(undefined)
+  const [splitActual, setSplitActual] = useState<Split | undefined>(undefined)
 
-  const pasosRuta = useRef<number>(0)
-  useAppStore.subscribe(
-    (state) => {
-      if (state.pasosRuta != pasosRuta.current) {
-        pasosRuta.current = state.pasosRuta
-      }
-    },
-  )
+  const pasosRuta = useAppStore(state => state.pasosRuta)
+
+  // const pasosRuta = useRef<number>(0)
+  // useAppStore.subscribe(
+  //   (state) => {
+  //     if (state.pasosRuta != pasosRuta.current) {
+  //       pasosRuta.current = state.pasosRuta
+  //     }
+  //   },
+  // )
 
   // const inicioRuta = useAppStore(state => state.inicioRuta)
   const inicioRuta = useRef<string | undefined>(undefined)
@@ -29,12 +31,12 @@ export const usePathProgress = () => {
   const rutaActiva = usePathActive().rutaActiva
 
   useEffect(() => {
-    if (!inicioRuta.current || !pasosRuta.current || !rutaActiva) return
+    if (!inicioRuta.current || !pasosRuta || !rutaActiva) return
     calcularSplitActual()
-  },[inicioRuta.current, pasosRuta.current, rutaActiva])
+  },[inicioRuta.current, pasosRuta, rutaActiva])
 
   function calcularSplitActual() {
-    const kmsRecorridos = objectiveConvert(pasosRuta.current, 'pasos')
+    const kmsRecorridos = objectiveConvert(pasosRuta, 'pasos')
     let km = 0
     let splitRecorriendo = undefined
 
@@ -48,8 +50,8 @@ export const usePathProgress = () => {
       km += split.duracion
     })
 
-    splitActual.current = splitRecorriendo
+    setSplitActual(splitRecorriendo)
   }
 
-  return useMemo(() => ({ rutaActiva, splitActual: splitActual.current }), [rutaActiva, splitActual.current])
+  return ({ rutaActiva, splitActual})
 }

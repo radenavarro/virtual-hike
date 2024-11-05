@@ -2,8 +2,7 @@ import { ReactNode, useEffect, useRef, useState } from "react"
 import { ThemedView } from "../ThemedView"
 import { ImageSourcePropType, StyleSheet } from "react-native"
 import { AutoscrollImage } from "./AutoscrollImage"
-import { useAppStore } from "@/zustand/useStore"
-import { Ruta, SpriteType } from "@/app/types"
+import { SpriteType } from "@/app/types"
 import { usePathProgress } from "@/hooks/home/usePathProgress"
 
 /**
@@ -11,22 +10,6 @@ import { usePathProgress } from "@/hooks/home/usePathProgress"
  * @returns 
  */
 export const Fondo = ({children}:{children?: ReactNode}) => {
-  // const [rutaSelecc, setRutaSelecc] = useState<Ruta | undefined>(undefined)
-
-  // const uuidRutaSelecc = useAppStore(state => state.selectedRuta);
-  // const todasLasRutas = useAppStore(state => state.ruta);
-  // const uuidRutaSelecc = useAppStore.getState().selectedRuta;
-  const uuidRutaSeleccRef = useRef<string | null>(null);
-
-  useAppStore.subscribe(
-    (state) => {
-      if (state.selectedRuta !== uuidRutaSeleccRef.current) {
-        uuidRutaSeleccRef.current = state.selectedRuta;
-      }
-    }, 
-    (state) => state.selectedRuta
-  );
-
   const { splitActual } = usePathProgress()
 
   const fondoPorDefecto: SpriteType = {
@@ -37,27 +20,26 @@ export const Fondo = ({children}:{children?: ReactNode}) => {
 
   return (
     <ThemedView style={{alignItems: "center"}}>
-      {console.log(splitActual)}
       <ThemedView 
         style={styles.imageContainer} 
       >
         <AutoscrollImage 
           zIndex={1}
-          source={(fondoPorDefecto.skybox) as ImageSourcePropType}
+          source={(splitActual?.sprites?.skybox || fondoPorDefecto.skybox) as ImageSourcePropType}
           duration={10240 * 16}
           speed={1024}
           resizeMode={"cover"}
         />
         <AutoscrollImage 
           zIndex={10}
-          source={(fondoPorDefecto.ground) as ImageSourcePropType}
+          source={(splitActual?.sprites?.ground || fondoPorDefecto.ground) as ImageSourcePropType}
           duration={10240 * 2}
           speed={1024}
           resizeMode={"cover"}
         />
         <AutoscrollImage
           zIndex={100}
-          source={(fondoPorDefecto.overlay) as ImageSourcePropType}
+          source={(splitActual?.sprites?.overlay || fondoPorDefecto.overlay) as ImageSourcePropType}
           duration={10240}
           speed={1024}
           resizeMode={"cover"}

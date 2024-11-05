@@ -1,6 +1,7 @@
 import { ImageError } from "@/errors/Error";
 import { useEffect, useRef } from "react";
-import { Animated, Easing, ImageBackground, ImageSourcePropType, StyleSheet, View } from "react-native"
+import { ImageBackground, ImageSourcePropType, StyleSheet, View } from "react-native"
+import Animated, { useSharedValue, withRepeat, withTiming, Easing, cancelAnimation } from "react-native-reanimated";
 
 type AutoscrollImageProps = {
   zIndex: number;
@@ -20,28 +21,23 @@ export const AutoscrollImage = (
     ...restProps
   }: AutoscrollImageProps
 ) => {
-  const imageRef = useRef(new Animated.Value(0)).current
-  const animation = useRef(Animated.loop(
-    Animated.timing(
-      imageRef,
+  const translateX = useSharedValue(0)
+  const animation = withRepeat(
+    withTiming(
+      -speed, 
       {
-        toValue: -speed,
-        duration: duration,
-        useNativeDriver: true,
-        easing: Easing.linear
+        duration, 
+        easing: Easing.linear,
       }
-    ), {iterations: -1}
-  )).current
-
-  function move (element: Animated.Value, speed: number = 0) {
-    animation.start()
-  }
+    ),
+    -1,
+    false,
+    () => {}
+  )
 
   useEffect(() => {
-    animation.stop()
-    imageRef.setValue(0)
-    move(imageRef, speed)
-  }, [source])
+    translateX.value = animation
+  }, [])
 
   const AnimatedBackground = Animated.createAnimatedComponent(ImageBackground)
   return (
@@ -49,13 +45,13 @@ export const AutoscrollImage = (
       <AnimatedBackground 
         source={source}
         resizeMode={resizeMode}
-        style={[styles.image, {transform: [{translateX: imageRef}]}]}
+        style={[styles.image, {transform: [{translateX}]}]}
         onError={() => { throw new ImageError('Error al cargar la imagen de fondo') }}
       />
       <AnimatedBackground 
         source={source}
         resizeMode={resizeMode}
-        style={[styles.image, {transform: [{translateX: imageRef}]}]}
+        style={[styles.image, {transform: [{translateX}]}]}
         onError={() => { throw new ImageError('Error al cargar la imagen de fondo') }}
       />
     </View>
