@@ -8,6 +8,8 @@ import { useAppStore } from "@/zustand/useStore";
 import { BloquesCrearRuta } from "./BloquesCrearRuta";
 
 import { RootSiblingParent } from "react-native-root-siblings";
+import { useTemplate } from "@/hooks/useTemplate";
+import { TemplateModalRuta } from "@/app/types";
 
 /**
  * Componente Modal que se encarga de las rutas. Entiéndase como un partial.
@@ -22,6 +24,8 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
   const [itemHasBeenPressed, setItemHasBeenPressed] = useState(false)
 
   const { ruta, addRuta, deleteRuta } = useAppStore()
+
+  const { template } = useTemplate<TemplateModalRuta>('tabs/config/modalRuta')
 
   const theme = useTheme();
 
@@ -149,7 +153,7 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
             <View style={[themedStyles.modal]}>
               {/* Título */}
               <View style={[themedStyles.modalSuperiorBar]}>
-                <ThemedText type="subtitle">Gestión de rutas</ThemedText>
+                <ThemedText type="subtitle">{template.header}</ThemedText>
                 <TouchableOpacity style={[themedStyles.closeButton]} onPress={hideModalRutas}>
                   <Ionicons name="close" size={24} style={[themedStyles.buttonDefaultText]} />
                 </TouchableOpacity>
@@ -159,7 +163,7 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
                 {/* Visor de ruta */}
                 <ThemedView style={[styles.elementContainer, {justifyContent: "space-between"}]}>
                   <View style={[styles.elementBlock]}>
-                    <ThemedText>Ruta actual: </ThemedText>
+                    <ThemedText>{template.currentPathText}: </ThemedText>
                     <ThemedText 
                       numberOfLines={1} 
                       ellipsizeMode="tail"
@@ -194,7 +198,7 @@ export const ModalRuta = ({...otherProps}:ModalProps): JSX.Element => {
                 {/* Carga de ruta */}
                 <ThemedView style={[styles.elementContainer]}>
                   <View style={[styles.elementBlock]}>
-                    <ThemedText>Cargar ruta: </ThemedText>
+                    <ThemedText>{template.loadPathText}: </ThemedText>
                     <TouchableOpacity onPress={toggleRutas} style={[styles.roundButton, themedStyles.buttonDefault]}>
                       <MaterialIcons name="upload-file" size={24} style={[themedStyles.buttonDefaultText]} />
                     </TouchableOpacity>

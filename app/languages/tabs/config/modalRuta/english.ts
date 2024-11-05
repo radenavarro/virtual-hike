@@ -1,6 +1,29 @@
 import { TemplateModalRuta } from "@/app/types";
 
 export const english:TemplateModalRuta = {
+    header: "Manage paths",
+    currentPathText: 'Current path',
+    loadPathText: 'Load path',
+    pathNameText: 'Path name',
+    daysToCompleteText: 'Days to complete path',
+    split: {
+        splitsText: 'Splits',
+        nameText: 'Name',
+        namePhText: 'Name',
+        startsInKmText: 'Starts in km',
+        startsInKmPhText: 'Km',
+        durationKmsText: 'Length in kms',
+        durationKmsPhText: 'Length in kms',
+        addSplit: 'Add this split',
+        editSplit: 'Edit split',
+        removeSplit: 'Remove split',
+        graphics: {
+            nameText: 'Graphics',
+            backgroundText: 'Background',
+            middleText: 'Middle',
+            foregroundText: 'Foreground',
+        }
+    },
     validationMessages: {
         rutaAdded: "Path added",
         rutaEdited: "All path modifications have been applied",

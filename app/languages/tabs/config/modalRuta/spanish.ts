@@ -1,6 +1,29 @@
 import { TemplateModalRuta } from "@/app/types";
 
 export const spanish:TemplateModalRuta = {
+    header: "Gestión de rutas",
+    currentPathText: 'Ruta actual',
+    loadPathText: 'Cargar ruta',
+    pathNameText: 'Nombre de la ruta',
+    daysToCompleteText: 'Días para completar la ruta',
+    split: {
+        splitsText: 'Puntos intermedios',
+        nameText: 'Nombre',
+        namePhText: 'Nombre',
+        startsInKmText: 'Comienza en el km',
+        startsInKmPhText: 'Km',
+        durationKmsText: 'Duración en kms',
+        durationKmsPhText: 'Duración en kms',
+        addSplit: 'Anadir este punto',
+        editSplit: 'Editar punto',
+        removeSplit: 'Eliminar punto',
+        graphics: {
+            nameText: 'Gráficos',
+            backgroundText: 'Detrás',
+            middleText: 'Intermedio',
+            foregroundText: 'Delante',
+        }
+    },
     validationMessages: {
         rutaAdded: "Ruta agregada",
         rutaEdited: "Las modificaciones en la ruta han sido guardadas",
@@ -20,5 +43,5 @@ export const spanish:TemplateModalRuta = {
         nameInSplits: "El nombre no puede estar en los splits",
         kmInSplits: "El km no puede estar en los splits",
         overlappingSplits: "Hay superposición en los splits: ",
-    }
+    },
 }

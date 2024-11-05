@@ -1,11 +1,11 @@
-import { Image, ImageBackground, ImageSourcePropType, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { ImageSourcePropType, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { ThemedView } from "../ThemedView";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/hooks/useTheme";
 import { useAppStore } from "@/zustand/useStore";
-import { Ruta, Split, SpriteType, TemplateModalRuta } from "@/app/types";
+import { Ruta, Split, SpriteType, TemplateModalRuta, TemplateBloquesCrearRuta } from "@/app/types";
 import Toast from "react-native-root-toast";
 import { useTemplate } from "@/hooks/useTemplate";
 import { getAllOverlappingsInSplits, GRAPHICS } from "@/app/helpers/helpers";
@@ -24,7 +24,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
   
   const theme = useTheme();
   const { ruta, addRuta, updateRuta } = useAppStore();
-  const { template } = useTemplate<TemplateModalRuta>("tabs/config/modalRuta")
+  const templateModalRuta = useTemplate<TemplateModalRuta>("tabs/config/modalRuta").template
 
   useEffect(() => {
     setCurrentRuta(ruta?.find((r) => r.uuid === selectedRuta))
@@ -151,7 +151,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
   function createRuta () {
     if (currentRuta) {
       addRuta(currentRuta)
-      Toast.show(template.validationMessages.rutaAdded, {
+      Toast.show(templateModalRuta.validationMessages.rutaAdded, {
         duration: Toast.durations.LONG,
         position: Toast.positions.CENTER,
         backgroundColor: theme.colors.button?.success?.disabledColor,
@@ -167,7 +167,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
   function editRuta () {
     if (!currentRuta) return
     updateRuta(currentRuta)
-    Toast.show(template.validationMessages.rutaEdited, {
+    Toast.show(templateModalRuta.validationMessages.rutaEdited, {
       duration: Toast.durations.LONG,
       position: Toast.positions.CENTER,
       backgroundColor: theme.colors.button?.success?.disabledColor,
@@ -199,7 +199,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
       updateRuta(modifiedRuta)
       setCurrentRuta(modifiedRuta)
       setCurrentSplit(initialSplit)
-      Toast.show(template.validationMessages.splitAdded, {
+      Toast.show(templateModalRuta.validationMessages.splitAdded, {
         duration: Toast.durations.LONG,
         position: Toast.positions.CENTER,
         backgroundColor: theme.colors.button?.success?.color,
@@ -266,7 +266,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
         }
       })
     )
-    Toast.show(template.validationMessages.spriteChanged, {
+    Toast.show(templateModalRuta.validationMessages.spriteChanged, {
       duration: Toast.durations.LONG,
       position: Toast.positions.CENTER,
       backgroundColor: theme.colors.button?.success?.color
@@ -290,7 +290,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
         }
       })
     )
-    return Toast.show(template.validationMessages.splitRemoved, {
+    return Toast.show(templateModalRuta.validationMessages.splitRemoved, {
       duration: Toast.durations.LONG,
       position: Toast.positions.CENTER,
       backgroundColor: theme.colors.button?.success?.color
@@ -311,15 +311,15 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
     const overlappingSplits = findOverlappingSplits([...currentRuta?.splits || [], parsedCurrentSplit])
     
     const validations = [
-      {condition: (!currentSplit.km && currentSplit.km !== 0),                          name: template.validationErrorMessages.noKm}, 
-      {condition: (!currentSplit.duracion && currentSplit.duracion !== 0),              name: template.validationErrorMessages.noDuration}, 
-      {condition: !currentSplit.nombre,                                                 name: template.validationErrorMessages.noName},
-      {condition: currentSplit.km < 0,                                                  name: template.validationErrorMessages.kmBelowZero},
-      {condition: currentSplit.duracion <= 0,                                           name: template.validationErrorMessages.durationZeroOrLess},
-      {condition: currentSplit.nombre.length === 0,                                     name: template.validationErrorMessages.nameEmpty},
-      {condition: existsInCurrentSplits(currentSplit.km.toString(), "km"),              name: template.validationErrorMessages.kmInSplits},
-      {condition: existsInCurrentSplits(currentSplit.nombre.toString(), "nombre"),      name: template.validationErrorMessages.nameInSplits},
-      {condition: overlappingSplits.length > 0,                                         name: template.validationErrorMessages.overlappingSplits + overlappingSplits.map(s => s.nombre)?.join(", ")},
+      {condition: (!currentSplit.km && currentSplit.km !== 0),                          name: templateModalRuta.validationErrorMessages.noKm}, 
+      {condition: (!currentSplit.duracion && currentSplit.duracion !== 0),              name: templateModalRuta.validationErrorMessages.noDuration}, 
+      {condition: !currentSplit.nombre,                                                 name: templateModalRuta.validationErrorMessages.noName},
+      {condition: currentSplit.km < 0,                                                  name: templateModalRuta.validationErrorMessages.kmBelowZero},
+      {condition: currentSplit.duracion <= 0,                                           name: templateModalRuta.validationErrorMessages.durationZeroOrLess},
+      {condition: currentSplit.nombre.length === 0,                                     name: templateModalRuta.validationErrorMessages.nameEmpty},
+      {condition: existsInCurrentSplits(currentSplit.km.toString(), "km"),              name: templateModalRuta.validationErrorMessages.kmInSplits},
+      {condition: existsInCurrentSplits(currentSplit.nombre.toString(), "nombre"),      name: templateModalRuta.validationErrorMessages.nameInSplits},
+      {condition: overlappingSplits.length > 0,                                         name: templateModalRuta.validationErrorMessages.overlappingSplits + overlappingSplits.map(s => s.nombre)?.join(", ")},
     ]
 
     for (const validation of validations) {
@@ -327,7 +327,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
     }
 
     if (failedValidations.length > 0) {
-      Toast.show(`${template.validationErrorMessages.splitErrorTitle}: ${failedValidations.join("\n\n")}`, {
+      Toast.show(`${templateModalRuta.validationErrorMessages.splitErrorTitle}: ${failedValidations.join("\n\n")}`, {
         position: Toast.positions.CENTER,
         duration: 2000 + (failedValidations.length * 1000),
         backgroundColor: theme.colors.button.danger.disabledColor,
@@ -369,7 +369,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
     <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="always" keyboardDismissMode="on-drag">
       <ThemedView style={[styles.elementContainer, {justifyContent: "space-between"}]}>
         <View style={styles.elementBlock}>
-          <ThemedText style={themedStyles.showWhenRouteObjectiveInSteps}>Nombre de la ruta: </ThemedText>
+          <ThemedText style={themedStyles.showWhenRouteObjectiveInSteps}>{templateModalRuta.pathNameText}: </ThemedText>
           <TextInput
             placeholder="Nombre"
             placeholderTextColor={theme.colors.border}
@@ -381,7 +381,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
       </ThemedView>
 
       <ThemedView style={styles.elementContainer}>
-        <ThemedText type="defaultSemiBold">Días para completar la ruta: </ThemedText>
+        <ThemedText type="default">{templateModalRuta.daysToCompleteText}: </ThemedText>
         <TextInput
           keyboardType="numeric"
           placeholder="Nº días"
@@ -412,14 +412,14 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
           {/* SPLITS */}
           <ThemedView style={[styles.elementContainer]}>
             <View style={styles.elementBlock}>
-              <ThemedText type="defaultSemiBold">Splits:</ThemedText>
+              <ThemedText type="defaultSemiBold">{templateModalRuta.split?.splitsText}:</ThemedText>
             </View>
           </ThemedView>
 
           {(currentRuta?.splits && currentRuta?.splits?.length > 0) && currentRuta.splits.map((split, index) => (
             <ThemedView key={index + JSON.stringify(split)} style={[styles.split, themedStyles.separator, {display: "flex", flexDirection: "column"}]}>
               <ThemedView style={[styles.elementContainer]}>
-                <ThemedText>Nombre: </ThemedText>
+                <ThemedText>{templateModalRuta.split?.nameText}: </ThemedText>
                 <TextInput 
                   placeholder="Nombre"
                   placeholderTextColor={theme.colors.border}
@@ -430,7 +430,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
                 />
               </ThemedView>
               <ThemedView style={[styles.elementContainer]}>
-                <ThemedText>Comienza en el km: </ThemedText>
+                <ThemedText>{templateModalRuta.split?.startsInKmText}: </ThemedText>
                 <TextInput 
                   placeholder="Km"
                   keyboardType="numeric"
@@ -442,7 +442,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
                 />
               </ThemedView>
               <ThemedView style={[styles.elementContainer]}>
-                <ThemedText>Duración en kms: </ThemedText>
+                <ThemedText>{templateModalRuta.split?.durationKmsText}: </ThemedText>
                 <TextInput 
                   placeholder="Duración en kms"
                   keyboardType="numeric"
@@ -455,12 +455,12 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
               </ThemedView>
 
               <ThemedView style={[styles.elementContainer, {flexDirection: "column", width: "100%"}]}>
-                <ThemedText style={{alignSelf: "flex-start"}}>Gráficos: </ThemedText>
+                <ThemedText style={{alignSelf: "flex-start"}}>{templateModalRuta.split?.graphics?.nameText}: </ThemedText>
                 <ThemedView style={[styles.indentLeft, styles.rowWrap]}>
                   <TouchableOpacity style={{flex: 1, position: 'relative'}}>
                     <SelectGraphic 
                       options={graphics} 
-                      labelText={"Detrás"}
+                      labelText={templateModalRuta.split?.graphics?.backgroundText}
                       resizeMode={"contain"}
                       source={ split.sprites?.skybox || require('@/assets/images/backgrounds/grass/skybox.png') }
                       type={"skybox"}
@@ -470,7 +470,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
                   <TouchableOpacity  style={{flex: 1, position: 'relative'}}>
                     <SelectGraphic 
                       options={graphics} 
-                      labelText={"Intermedio"}
+                      labelText={templateModalRuta.split?.graphics?.middleText}
                       resizeMode={"contain"}
                       source={ split.sprites?.ground || require('@/assets/images/backgrounds/grass/ground.png') }
                       type={"ground"}
@@ -480,7 +480,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
                   <TouchableOpacity  style={{flex: 1, position: 'relative'}}>
                     <SelectGraphic 
                       options={graphics} 
-                      labelText={"Delante"}
+                      labelText={templateModalRuta.split?.graphics?.foregroundText}
                       resizeMode={"contain"}
                       source={ split.sprites?.overlay || require('@/assets/images/backgrounds/grass/overlay.png') }
                       type={"overlay"}
@@ -491,7 +491,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
               </ThemedView>
               <ThemedView style={[styles.elementContainer, {justifyContent: "center"}]}>
                 <TouchableOpacity style={[styles.buttonWithText, themedStyles.buttonDefault, themedStyles.dangerBorder]} onPress={() => removeSplit(index)}>
-                  <ThemedText style={[themedStyles.dangerText]}>Eliminar split</ThemedText>
+                  <ThemedText style={[themedStyles.dangerText]}>{templateModalRuta.split?.removeSplit}</ThemedText>
                   <MaterialIcons name="remove" size={24} style={[themedStyles.buttonDefaultText]} />
                 </TouchableOpacity>
               </ThemedView>
@@ -500,9 +500,9 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
           {/* SECCIÓN NUEVO SPLIT */}
           <ThemedView style={[styles.split, themedStyles.newSplit, {display: "flex", flexDirection: "column"}]}>
             <ThemedView style={[styles.elementContainer, styles.themedViewInheritor]}>
-              <ThemedText>Nombre: </ThemedText>
+              <ThemedText>{templateModalRuta.split?.nameText}: </ThemedText>
               <TextInput 
-                placeholder="Nombre"
+                placeholder={templateModalRuta.split?.namePhText}
                 placeholderTextColor={theme.colors.border}
                 style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
                 value={currentSplit.nombre}
@@ -510,7 +510,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
               />
             </ThemedView>
             <ThemedView style={[styles.elementContainer, styles.themedViewInheritor]}>
-              <ThemedText>Comienza en el km: </ThemedText>
+              <ThemedText>{templateModalRuta.split?.startsInKmText}: </ThemedText>
               <TextInput 
                 placeholder="Km"
                 keyboardType="numeric"
@@ -521,9 +521,9 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
               />
             </ThemedView>
             <ThemedView style={[styles.elementContainer, styles.themedViewInheritor]}>
-              <ThemedText>Duración en kms: </ThemedText>
+              <ThemedText>{templateModalRuta.split?.durationKmsText}: </ThemedText>
               <TextInput 
-                placeholder="Duración en kms"
+                placeholder={templateModalRuta.split?.durationKmsPhText}
                 keyboardType="numeric"
                 placeholderTextColor={theme.colors.border}
                 style={[styles.input, themedStyles.inputBorder, { flex: 1, color: theme.colors.text }]}
@@ -533,7 +533,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
             </ThemedView>
             <ThemedView style={[styles.elementContainer, styles.themedViewInheritor, styles.justifyCenter]}>
               <ThemedText>
-                Añadir este split: 
+                {templateModalRuta.split?.addSplit}: 
               </ThemedText>
               <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={handleAddNewSplit}>
                 <FontAwesome6 name="add" size={24} style={[themedStyles.buttonPrimaryText]} />

@@ -77,43 +77,65 @@ export interface TemplateIndex extends Template {
 }
 
 export interface TemplateConfig extends Template {
-    header: string;
-    heightDescription: string;
-    heightText: string;
-    objectiveDescription: string;
-    objectiveText: string;
-    pathDescription: string;
-    pathText: string;
+  header: string;
+  heightDescription: string;
+  heightText: string;
+  objectiveDescription: string;
+  objectiveText: string;
+  pathDescription: string;
+  pathText: string;
 }
 
 export interface TemplateModalRuta extends Template {
-    validationMessages: {
-        rutaAdded: string;
-        rutaEdited: string;
-        splitAdded: string;
-        splitEdited: string;
-        splitRemoved: string;
-        spriteChanged: string;
-    };
-    validationErrorMessages: {
-        splitErrorTitle: string;
-        noName: string;
-        noKm: string;
-        noDuration: string;
-        kmBelowZero: string;
-        durationZeroOrLess: string;
-        nameEmpty: string;
-        nameInSplits: string;
-        kmInSplits: string;
-        overlappingSplits: string;
-    };
+  currentPathText: string;
+  loadPathText: string;
+  pathNameText: string;
+  daysToCompleteText: string;
+  split: {
+    splitsText: string;
+    nameText: string;
+    namePhText: string;
+    startsInKmText: string;
+    startsInKmPhText: string;
+    durationKmsText: string;
+    durationKmsPhText: string;
+    addSplit: string;
+    editSplit: string;
+    removeSplit: string;
+    graphics: {
+      nameText: string;
+      backgroundText: string;
+      middleText: string;
+      foregroundText: string;
+    }
+  };
+  validationMessages: {
+    rutaAdded: string;
+    rutaEdited: string;
+    splitAdded: string;
+    splitEdited: string;
+    splitRemoved: string;
+    spriteChanged: string;
+  };
+  validationErrorMessages: {
+    splitErrorTitle: string;
+    noName: string;
+    noKm: string;
+    noDuration: string;
+    kmBelowZero: string;
+    durationZeroOrLess: string;
+    nameEmpty: string;
+    nameInSplits: string;
+    kmInSplits: string;
+    overlappingSplits: string;
+  };
 }
 
 // STORE
 
 export type Registro = {
-    fecha?: dayjs.Dayjs;
-    pasos?: number;
+  fecha?: dayjs.Dayjs;
+  pasos?: number;
 }
 
 export type DatosUser = {
