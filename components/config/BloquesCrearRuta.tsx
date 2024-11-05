@@ -5,7 +5,7 @@ import { ThemedView } from "../ThemedView";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/hooks/useTheme";
 import { useAppStore } from "@/zustand/useStore";
-import { Ruta, Split, SpriteType, TemplateModalRuta, TemplateBloquesCrearRuta } from "@/app/types";
+import { Ruta, Split, SpriteType, TemplateModalRuta } from "@/app/types";
 import Toast from "react-native-root-toast";
 import { useTemplate } from "@/hooks/useTemplate";
 import { getAllOverlappingsInSplits, GRAPHICS } from "@/app/helpers/helpers";
