@@ -72,7 +72,14 @@ export interface TemplateIndex extends Template {
       hourNamePlural: string;
       minuteName: string;
       minuteNamePlural: string;
-    }
+    },
+    currentPathText: string;
+    pathStartText: string;
+    progressText: string;
+    splitText: string;
+    kmText: string;
+    remainingText: string;
+    todayText: string;
   }
 }
 

@@ -16,6 +16,13 @@ export const spanish:TemplateIndex = {
       hourNamePlural: 'Horas',
       minuteName: 'Minuto',
       minuteNamePlural: 'Minutos',
-    }
+    },
+    currentPathText: 'Ruta actual',
+    pathStartText: 'Iniciada',
+    progressText: 'Progreso',
+    splitText: 'Punto',
+    kmText: 'Km',
+    remainingText: 'Faltan',
+    todayText: 'Hoy',
   },
 }

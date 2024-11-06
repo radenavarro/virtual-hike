@@ -16,6 +16,13 @@ export const english:TemplateIndex = {
       hourNamePlural: 'Hours',
       minuteName: 'Minute',
       minuteNamePlural: 'Minutes',
-    }
+    },
+    currentPathText: 'Current path',
+    pathStartText: 'Started',
+    progressText: 'Progress',
+    splitText: 'Split',
+    kmText: 'Km',
+    remainingText: 'Left',
+    todayText: 'Today',
   }
 }

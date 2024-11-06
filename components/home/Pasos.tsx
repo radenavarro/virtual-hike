@@ -64,10 +64,10 @@ export const Pasos = () => {
       {
         selectedRuta && (
           <>
-            <ThemedText type="subtitle">Ruta actual</ThemedText>
+            <ThemedText type="subtitle">{template.stepCounter?.currentPathText}</ThemedText>
             <ThemedText type="title">{ rutaActiva?.nombre }</ThemedText>
-            <ThemedText type='subtitle'>Iniciada: { inicioDeRuta || "" }</ThemedText>
-            <ThemedText type='subtitle'>Progreso: </ThemedText>
+            <ThemedText type='subtitle'>{template.stepCounter?.pathStartText}: { inicioDeRuta || "" }</ThemedText>
+            <ThemedText type='subtitle'>{template.stepCounter?.progressText}: </ThemedText>
             <View style={{ display: "flex", flexDirection: "row", flexWrap: "nowrap", alignItems: "center" }}>
               <ThemedText type='title'>{pasosDeRuta || 0} </ThemedText><ThemedText>{template.stepCounter?.stepCounterText}</ThemedText>
             </View>
@@ -79,11 +79,11 @@ export const Pasos = () => {
                 width: `${calcPercent()}%`
               }}></ThemedView>
             </ThemedView>
-            <ThemedText style={{fontSize: 10, lineHeight: 10}}>Punto {splitActual?.nombre || " - "} | Km: {objectiveConvert(pasosDeRuta, 'pasos')} | Faltan: {tiempoFaltante()}</ThemedText>
+            <ThemedText style={{fontSize: 10, lineHeight: 10}}>{template.stepCounter?.splitText} {splitActual?.nombre || " - "} | {template.stepCounter?.kmText}: {objectiveConvert(pasosDeRuta, 'pasos')} | {template.stepCounter?.remainingText}: {tiempoFaltante()}</ThemedText>
           </>
         )
       }
-      <ThemedText type={selectedRuta ? "defaultSemiBold" : "title"}>Hoy: { template.stepCounter?.title }</ThemedText>
+      <ThemedText type={selectedRuta ? "defaultSemiBold" : "title"}>{template.stepCounter?.todayText}: { template.stepCounter?.title }</ThemedText>
       <View style={{ display: "flex", flexDirection: "row", flexWrap: "nowrap", alignItems: "center" }}>
         <ThemedText type={selectedRuta ? "defaultSemiBold" : "title"}>{ registro.pasos } </ThemedText><ThemedText>{ template.stepCounter?.stepCounterText }</ThemedText>
       </View>
