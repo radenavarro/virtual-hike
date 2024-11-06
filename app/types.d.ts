@@ -131,6 +131,12 @@ export interface TemplateModalRuta extends Template {
   };
 }
 
+export interface TemplatePaths extends Template {
+  descriptionP1Text: string;
+  descriptionP2Text: string;
+  pathSelectText: string;
+}
+
 // STORE
 
 export type Registro = {

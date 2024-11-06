@@ -10,22 +10,26 @@ import { FontAwesome6 } from '@expo/vector-icons';
 import { useAppStore } from '@/zustand/useStore';
 import { useTheme } from '@/hooks/useTheme';
 import { PathSelection } from '@/components/paths/PathSelection';
+import { useTemplate } from '@/hooks/useTemplate';
+import { TemplatePaths } from '../types';
 
 export default function TabTwoScreen() {
 
   const theme = useTheme()
+
+  const { template } = useTemplate<TemplatePaths>('tabs/paths')
 
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#65b459', dark: '#15491a' }}
       headerImage={<FontAwesome6 name="person-walking" size={310} color="#65b459" />}>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Rutas</ThemedText>
+        <ThemedText type="title">{template.header}</ThemedText>
       </ThemedView>
-      <ThemedText>Selecciona o deselecciona una ruta entre las que ya hay añadidas.</ThemedText>
-      <ThemedText>¿No has creado o configurado una ruta?. Ve a la sección "Configurar" y hazlo allí.</ThemedText>
+      <ThemedText>{template.descriptionP1Text}</ThemedText>
+      <ThemedText>{template.descriptionP2Text}</ThemedText>
       
-      <ThemedText type="subtitle">Selección de ruta</ThemedText>
+      <ThemedText type="subtitle">{template.pathSelectText}</ThemedText>
 
       <PathSelection />
       

@@ -8,6 +8,8 @@ import { spanish as modalRutaSpanish } from "./languages/tabs/config/modalRuta/s
 import { english as modalRutaEnglish } from "./languages/tabs/config/modalRuta/english"
 import { spanish as configSpanish } from "./languages/tabs/config/spanish"
 import { english as configEnglish } from "./languages/tabs/config/english"
+import { spanish as pathsSpanish } from "./languages/tabs/paths/spanish"
+import { english as pathsEnglish } from "./languages/tabs/paths/english"
 
 export const fullAppTemplate = {
     tabs: {
@@ -30,6 +32,10 @@ export const fullAppTemplate = {
           spanish: modalRutaSpanish,
           english: modalRutaEnglish
         }
+      },
+      paths: {
+        spanish: pathsSpanish,
+        english: pathsEnglish
       }
     }
   }
