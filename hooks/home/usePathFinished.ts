@@ -7,10 +7,7 @@ import { objectiveConvert } from "@/app/helpers/helpers"
 type EstadosRuta = "pendiente" | "en progreso" | "terminada"
 type ExitoValores = "si" | "no" | undefined
 export const usePathFinished = () => {
-  // const [success, setSuccess] = useState<ExitoValores>(undefined)
-  // const [pathStatus, setPathStatus] = useState<EstadosRuta>("pendiente")
-
-  const success = useRef<ExitoValores>(undefined)
+  const [success, setSuccess] = useState<ExitoValores>(undefined)
   const pathStatus = useRef<EstadosRuta>("pendiente")
 
   const pasosDeRuta = useAppStore(state => state.pasosRuta)
@@ -32,7 +29,7 @@ export const usePathFinished = () => {
     const kmsAndados = objectiveConvert(pasosDeRuta, 'pasos')
 
     const quedaTiempo = Object.values(tiempoRestante).some(valor => valor > 0)
-    let exito: ExitoValores = success.current;
+    let exito: ExitoValores = success;
     let estadoRuta: EstadosRuta = pathStatus.current;
 
     if (quedaTiempo) {
@@ -50,9 +47,9 @@ export const usePathFinished = () => {
       exito = "no"
     }
 
-    if (exito !== success.current) success.current = exito
+    if (exito !== success) setSuccess(exito)
     if (estadoRuta !== pathStatus.current) pathStatus.current = estadoRuta
   }, [pathStatus, success, rutaActiva, tiempoRestante, pasosDeRuta])
 
-  return ({ pathStatus: pathStatus.current, success: success.current })
+  return ({ pathStatus: pathStatus.current, success })
 }

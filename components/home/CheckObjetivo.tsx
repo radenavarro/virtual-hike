@@ -9,6 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 export const CheckObjetivo = () => {
   const { success } = usePathFinished();
+  // const success = undefined
   const [modalVisible, setModalVisible] = useState<boolean>(true)
 
   const theme = useTheme();
@@ -82,7 +83,7 @@ export const CheckObjetivo = () => {
   return (
     <>
       {success === "si" && showConfetti}
-      {success === "no" && modalVisible && showFailurePopup()}
+      {success === "no" && showFailurePopup()}
     </>
   )
 }
