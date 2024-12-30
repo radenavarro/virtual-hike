@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import { throttle } from '@/app/helpers/helpers';
+import React, { useEffect, useRef } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
-import Animated, { Easing, useSharedValue, withTiming, interpolate, useDerivedValue } from 'react-native-reanimated';
+import Animated, { Easing, useSharedValue, withTiming, interpolate, useDerivedValue, runOnJS } from 'react-native-reanimated';
 
 type ConfettiPieceProps = {
   startPos: number;
+  onAnimationEnd: () => void;
 }
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
@@ -15,7 +17,7 @@ const randomColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
-const ConfettiPiece = ({ startPos }: ConfettiPieceProps) => {
+const ConfettiPiece = ({ startPos, onAnimationEnd }: ConfettiPieceProps) => {
 
   const animatedValue = useSharedValue(0)
   const animation = withTiming(
@@ -23,6 +25,9 @@ const ConfettiPiece = ({ startPos }: ConfettiPieceProps) => {
     {
       duration: 3000 + Math.random() * 2000, 
       easing: Easing.out(Easing.ease)
+    },
+    () => {
+      runOnJS(onAnimationEnd)();
     }
   )
 
@@ -58,14 +63,20 @@ const ConfettiPiece = ({ startPos }: ConfettiPieceProps) => {
   );
 };
 
-const ConfettiAnimation = () => {
-
+const ConfettiAnimation = ({ onConfettiEnd = () => {} }:{ onConfettiEnd: () => void }) => {
+  const finishedAnimations = useRef<number>(0);
   return (
     <View style={StyleSheet.absoluteFill}>
       {[...Array(CONFETTI_COUNT)].map((_, index) => (
         <ConfettiPiece
           key={index}
           startPos={Math.random() * screenWidth}
+          onAnimationEnd={ 
+            () => {
+              finishedAnimations.current++
+              if (finishedAnimations.current === CONFETTI_COUNT) onConfettiEnd()
+            }
+          }
         />
       ))}
     </View>

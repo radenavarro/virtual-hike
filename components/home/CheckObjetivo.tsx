@@ -1,7 +1,6 @@
 import { usePathFinished } from "@/hooks/home/usePathFinished"
 import ConfettiAnimation from "../Confetti"
-import { useCallback, useRef, useState } from "react";
-import Toast from "react-native-root-toast";
+import { useRef, useState } from "react";
 import { Modal, View, StyleSheet, TouchableOpacity } from "react-native";
 import { ThemedText } from "../ThemedText";
 import { useTheme } from "@/hooks/useTheme";
@@ -10,13 +9,14 @@ import { Ionicons } from "@expo/vector-icons";
 export const CheckObjetivo = () => {
   const { success } = usePathFinished();
   // const success = undefined
-  const [modalVisible, setModalVisible] = useState<boolean>(true)
+  const [modalFracasoVisible, setModalFracasoVisible] = useState<boolean>(true)
+  const [modalExitoVisible, setModalExitoVisible] = useState<boolean>(false)
 
   const theme = useTheme();
   const themedStyles = StyleSheet.create({
     modal: {
       minHeight: 200,
-      width: "84%",
+      width: "90%",
       margin: "auto",
       borderColor: theme.colors.border,
       borderWidth: 1,
@@ -32,6 +32,24 @@ export const CheckObjetivo = () => {
       alignItems: "center",
       color: theme.colors.text,
       padding: 10
+    },
+    modalSuccessSuperiorBar: {
+      backgroundColor: theme.colors.button.success.color,
+      display: "flex",
+      flexDirection: "row",
+      flexWrap: "nowrap",
+      justifyContent: "space-between",
+      alignItems: "center",
+      color: theme.colors.text,
+      padding: 10
+    },
+    modalSubtitle: {
+      fontSize: 28,
+      fontWeight: "bold",
+      textAlign: "center",
+      color: theme.colors.text,
+      textShadowColor: success === "si" ? theme.colors.text : theme.colors.background,
+      textShadowRadius: 10,
     },
     modalBody: {
       backgroundColor: theme.colors.background,
@@ -53,27 +71,49 @@ export const CheckObjetivo = () => {
   })
 
   const showConfetti = useRef(
-    <ConfettiAnimation/>
+    <ConfettiAnimation onConfettiEnd={() => {setModalExitoVisible(true)}}/>
   ).current
 
-  const showFailurePopup = () => {
+  const showSuccessPopup = () => {
     return (
       <Modal 
-        visible={modalVisible} 
-        onDismiss={() => setModalVisible(false)}
-        onRequestClose={() => setModalVisible(false)}
+        visible={modalExitoVisible} 
+        onDismiss={() => setModalExitoVisible(false)}
+        onRequestClose={() => setModalExitoVisible(false)}
         transparent
       >
         <View style={themedStyles.modal}>
-          <View style={[themedStyles.modalSuperiorBar]}>
-            <ThemedText type="subtitle"></ThemedText>
-            <TouchableOpacity style={[themedStyles.closeButton]} onPress={() => setModalVisible(false)}>
+          <View style={[themedStyles.modalSuccessSuperiorBar]}>
+            <ThemedText type="subtitle" style={[themedStyles.modalSubtitle]}>🎉¡CONSEGUIDO!🎉</ThemedText>
+            <TouchableOpacity style={[themedStyles.closeButton]} onPress={() => setModalExitoVisible(false)}>
               <Ionicons name="close" size={24} style={[themedStyles.buttonDefaultText]} />
             </TouchableOpacity>
           </View>
           <View style={themedStyles.modalBody}>
-            <ThemedText type="title">NO PUDO SER</ThemedText>
-            <ThemedText type="subtitle">No has completado el objetivo a tiempo.</ThemedText>
+            <ThemedText type="subtitle">Has logrado completar la ruta a tiempo. ¡Bien hecho!.</ThemedText>
+          </View>
+        </View>
+      </Modal>
+    )
+  }
+
+  const showFailurePopup = () => {
+    return (
+      <Modal 
+        visible={modalFracasoVisible} 
+        onDismiss={() => setModalFracasoVisible(false)}
+        onRequestClose={() => setModalFracasoVisible(false)}
+        transparent
+      >
+        <View style={themedStyles.modal}>
+          <View style={[themedStyles.modalSuperiorBar]}>
+            <ThemedText type="subtitle" style={[themedStyles.modalSubtitle]}>⌚️ NO PUDO SER ⌚️</ThemedText>
+            <TouchableOpacity style={[themedStyles.closeButton]} onPress={() => setModalFracasoVisible(false)}>
+              <Ionicons name="close" size={24} style={[themedStyles.buttonDefaultText]} />
+            </TouchableOpacity>
+          </View>
+          <View style={themedStyles.modalBody}>
+            <ThemedText type="subtitle">No has completado el objetivo a tiempo. Vuelve a intentarlo.</ThemedText>
           </View>
         </View>
       </Modal>
@@ -82,6 +122,7 @@ export const CheckObjetivo = () => {
 
   return (
     <>
+      {showSuccessPopup()}{/* Está, pero no visible a menos que se cumpla el objetivo */}
       {success === "si" && showConfetti}
       {success === "no" && showFailurePopup()}
     </>

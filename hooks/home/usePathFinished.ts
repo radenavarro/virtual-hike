@@ -42,9 +42,13 @@ export const usePathFinished = () => {
       exito = "si"
     }
 
-    if (!quedaTiempo && (Object.keys(tiempoRestante).length > 0) && (kmsAndados < duracion)) {
-      estadoRuta = "terminada"
+    if (!quedaTiempo) {
       exito = "no"
+      if (kmsAndados < duracion) {
+        estadoRuta = "en progreso"
+      } else {
+        estadoRuta = "terminada"
+      }
     }
 
     if (exito !== success) setSuccess(exito)
