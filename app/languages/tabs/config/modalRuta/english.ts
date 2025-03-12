@@ -19,9 +19,19 @@ export const english:TemplateModalRuta = {
         removeSplit: 'Remove split',
         graphics: {
             nameText: 'Graphics',
+            skyboxText: 'Skybox',
             backgroundText: 'Background',
             middleText: 'Middle',
             foregroundText: 'Foreground',
+            alias: {
+                grass: "Grass",
+                town: "Town",
+                wasteland: "Wasteland",
+                cave: "Cave",
+                lake: "Lake",
+                forest: "Forest",
+                marsh: "Marsh",
+            }
         }
     },
     validationMessages: {

@@ -76,6 +76,7 @@ export const GRAPHICS = (() => {
         const spriteResource: Split["sprites"] = Sprites[directory]
         graphics[directory] = {
           skybox: spriteResource ? spriteResource.skybox : undefined,
+          background: spriteResource ? spriteResource.background : undefined,
           ground: spriteResource ? spriteResource.ground : undefined,
           overlay: spriteResource ? spriteResource.overlay : undefined,
         }

@@ -30,7 +30,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
     setCurrentRuta(ruta?.find((r) => r.uuid === selectedRuta))
   }, [selectedRuta, !!itemHasBeenPressed])
   
-  const graphics = GRAPHICS.getFrom(["grass", "town"])
+  const graphics = GRAPHICS.getFrom(["cave", "forest", "grass", "lake", "marsh", "town", "wasteland"])
 
   const themedStyles = StyleSheet.create({
     modalWrapper: {
@@ -318,7 +318,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
       {condition: currentSplit.duracion <= 0,                                           name: templateModalRuta.validationErrorMessages.durationZeroOrLess},
       {condition: currentSplit.nombre.length === 0,                                     name: templateModalRuta.validationErrorMessages.nameEmpty},
       {condition: existsInCurrentSplits(currentSplit.km.toString(), "km"),              name: templateModalRuta.validationErrorMessages.kmInSplits},
-      {condition: existsInCurrentSplits(currentSplit.nombre.toString(), "nombre"),      name: templateModalRuta.validationErrorMessages.nameInSplits},
+      // {condition: existsInCurrentSplits(currentSplit.nombre.toString(), "nombre"),      name: templateModalRuta.validationErrorMessages.nameInSplits},
       {condition: overlappingSplits.length > 0,                                         name: templateModalRuta.validationErrorMessages.overlappingSplits + overlappingSplits.map(s => s.nombre)?.join(", ")},
     ]
 
@@ -460,7 +460,8 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
                   <TouchableOpacity style={{flex: 1, position: 'relative'}}>
                     <SelectGraphic 
                       options={graphics} 
-                      labelText={templateModalRuta.split?.graphics?.backgroundText}
+                      labelText={templateModalRuta.split?.graphics?.skyboxText}
+                      alias={templateModalRuta.split?.graphics?.alias}
                       resizeMode={"contain"}
                       source={ split.sprites?.skybox || require('@/assets/images/backgrounds/grass/skybox.png') }
                       type={"skybox"}
@@ -470,7 +471,19 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
                   <TouchableOpacity  style={{flex: 1, position: 'relative'}}>
                     <SelectGraphic 
                       options={graphics} 
+                      labelText={templateModalRuta.split?.graphics?.backgroundText}
+                      alias={templateModalRuta.split?.graphics?.alias}
+                      resizeMode={"contain"}
+                      source={ split.sprites?.background || require('@/assets/images/backgrounds/grass/background.png') }
+                      type={"background"}
+                      onSelect={(dir, source) => handleChangeSprite(dir, source, index)}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity  style={{flex: 1, position: 'relative'}}>
+                    <SelectGraphic 
+                      options={graphics} 
                       labelText={templateModalRuta.split?.graphics?.middleText}
+                      alias={templateModalRuta.split?.graphics?.alias}
                       resizeMode={"contain"}
                       source={ split.sprites?.ground || require('@/assets/images/backgrounds/grass/ground.png') }
                       type={"ground"}
@@ -481,6 +494,7 @@ export const BloquesCrearRuta = ({ selectedRuta, itemHasBeenPressed }: { selecte
                     <SelectGraphic 
                       options={graphics} 
                       labelText={templateModalRuta.split?.graphics?.foregroundText}
+                      alias={templateModalRuta.split?.graphics?.alias}
                       resizeMode={"contain"}
                       source={ split.sprites?.overlay || require('@/assets/images/backgrounds/grass/overlay.png') }
                       type={"overlay"}

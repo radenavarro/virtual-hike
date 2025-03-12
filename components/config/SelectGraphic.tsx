@@ -12,6 +12,7 @@ export const SelectGraphic = (
     type, 
     labelText = "", 
     resizeMode = "contain",
+    alias,
     onSelect = () => {}
   }: {
     options: {[key: string]: {[key: string] : any}}, 
@@ -19,6 +20,7 @@ export const SelectGraphic = (
     type: keyof SpriteType, 
     labelText?: string, 
     resizeMode?: 'cover' | 'contain' | 'stretch' | 'repeat' | 'center',
+    alias?: {[key in GraphicsDirectory]: string},
     onSelect?: (directory: keyof SpriteType, source: ImageSourcePropType) => void
   }
 ) => {
@@ -103,6 +105,7 @@ export const SelectGraphic = (
               keyExtractor={(item) => item[0]}
               renderItem={({ item }) => {
                 const _source = item[1]?.[type]
+                const itemAlias: string = alias?.[item[0]] ?? item[0]
                 return (
                   <TouchableOpacity
                     style={[styles.roundedButton, themedStyles.buttonDefault, {flexDirection: "row", justifyContent: "space-between"}]}
@@ -111,7 +114,7 @@ export const SelectGraphic = (
                       handleModalClose()
                     }}
                   >
-                    <ThemedText style={[themedStyles.buttonDefaultText]}>{item[0]}</ThemedText>
+                    <ThemedText style={[themedStyles.buttonDefaultText]}>{itemAlias}</ThemedText>
                     <ImageBackground style={[styles.thumbnail, {width: 128}]} resizeMode={resizeMode} source={_source}/>
                   </TouchableOpacity>
                 )

@@ -14,6 +14,7 @@ export const Fondo = ({children}:{children?: ReactNode}) => {
 
   const fondoPorDefecto: SpriteType = {
     skybox: require('@/assets/images/backgrounds/grass/skybox.png'),
+    background: require('@/assets/images/backgrounds/grass/background.png'),
     ground: require('@/assets/images/backgrounds/grass/ground.png'),
     overlay: require('@/assets/images/backgrounds/grass/overlay.png'),
   }
@@ -26,7 +27,14 @@ export const Fondo = ({children}:{children?: ReactNode}) => {
         <AutoscrollImage 
           zIndex={1}
           source={(splitActual?.sprites?.skybox || fondoPorDefecto.skybox) as ImageSourcePropType}
-          duration={10240 * 16}
+          duration={10240 * 24}
+          speed={1024}
+          resizeMode={"cover"}
+        />
+        <AutoscrollImage 
+          zIndex={1}
+          source={(splitActual?.sprites?.background || fondoPorDefecto.background) as ImageSourcePropType}
+          duration={10240 * 8}
           speed={1024}
           resizeMode={"cover"}
         />

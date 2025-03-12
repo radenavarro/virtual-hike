@@ -8,7 +8,10 @@ type TemplatePath = typeof fullAppTemplate |
   typeof fullAppTemplate["tabs"]["language"] | 
   typeof fullAppTemplate["tabs"]["layout"] | 
   typeof fullAppTemplate["tabs"]["index"] | 
-  typeof fullAppTemplate["tabs"]["config"];
+  typeof fullAppTemplate["tabs"]["config"] |
+  typeof fullAppTemplate["constants"]["defaultPaths"]["athensMarathon"] |
+  typeof fullAppTemplate["constants"]["defaultPaths"]["frodosPath"] | 
+  typeof fullAppTemplate["constants"]["defaultPaths"]["elderScrollsPaths"]["dragonbornPathOne"];
 
 const emptyTemplate: Template = {
   header: '',

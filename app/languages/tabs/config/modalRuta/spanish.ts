@@ -19,9 +19,19 @@ export const spanish:TemplateModalRuta = {
         removeSplit: 'Eliminar punto',
         graphics: {
             nameText: 'Gráficos',
+            skyboxText: 'Cielo',
             backgroundText: 'Detrás',
-            middleText: 'Intermedio',
+            middleText: 'Medio',
             foregroundText: 'Delante',
+            alias: {
+                grass: "Pasto",
+                town: "Pueblo",
+                wasteland: "Yermo",
+                cave: "Cueva",
+                lake: "Lago",
+                forest: "Bosque",
+                marsh: "Pantano",
+            }
         }
     },
     validationMessages: {

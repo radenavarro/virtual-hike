@@ -86,6 +86,9 @@ export default function TabThreeScreen() {
    */
   function setDailyObjectives () {
     setObjetivo({ ...objetivo, diario: prevInfo.objetivo.diario.pasos })
+    Toast.show('Objetivo actualizado', {
+      position: Toast.positions.BOTTOM
+    })
   }
 
   function setObjectiveInSteps (text: string) {
@@ -201,35 +204,43 @@ export default function TabThreeScreen() {
           <MaterialIcons name="delete-outline" size={24} style={[ themedStyles.buttonDefaultText ]} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={updateUserInStore}>
-          <FontAwesome6 name="add" size={24} style={[ themedStyles.buttonPrimaryText, styles.icon ]} />
+          <FontAwesome6 name="check" size={24} style={[ themedStyles.buttonPrimaryText, styles.icon ]} />
         </TouchableOpacity>
       </ThemedView>
 
       <ThemedText>{template.objectiveDescription}</ThemedText>
       <ThemedView style={[styles.elementContainer]}>
         <ThemedText type="defaultSemiBold">{template.objectiveText}: </ThemedText>
-        <TextInput 
-          keyboardType="numeric" 
-          placeholder="Pasos" 
-          placeholderTextColor={theme.colors.border}
-          value={prevInfo?.objetivo?.diario?.pasos?.toString() ?? undefined}
-          onChangeText={setObjectiveInSteps}
-          style={[styles.input, themedStyles.input, themedStyles.showWhenObjectiveInSteps]} 
-        />
-        <ThemedText style={[themedStyles.showWhenObjectiveInSteps]}>
-          <Ionicons name="footsteps-outline" size={24} style={themedStyles.buttonDefaultText} />
-        </ThemedText>
-        <TextInput 
-          keyboardType="numeric"
-          placeholder="Kms"
-          placeholderTextColor={theme.colors.border}
-          value={prevInfo.objetivo?.diario?.kms?.toString() ?? undefined}
-          onChangeText={setObjectiveInKilometers}
-          style={[styles.input, themedStyles.input, themedStyles.hideWhenObjectiveInSteps]} 
-        />
-        <ThemedText style={[themedStyles.hideWhenObjectiveInSteps]}>
-          <MaterialCommunityIcons name='speedometer' size={24} style={themedStyles.buttonDefaultText} />
-        </ThemedText>
+        {measureSteps && (
+          <>
+            <TextInput 
+              keyboardType="numeric" 
+              placeholder="Pasos" 
+              placeholderTextColor={theme.colors.border}
+              value={prevInfo?.objetivo?.diario?.pasos?.toString() ?? undefined}
+              onChangeText={setObjectiveInSteps}
+              style={[styles.input, themedStyles.input, themedStyles.showWhenObjectiveInSteps]} 
+            />
+            <ThemedText style={[themedStyles.showWhenObjectiveInSteps]}>
+              <Ionicons name="footsteps-outline" size={24} style={themedStyles.buttonDefaultText} />
+            </ThemedText>
+          </>
+        )}
+        {!measureSteps && (
+          <>
+            <TextInput 
+              keyboardType="numeric"
+              placeholder="Kms"
+              placeholderTextColor={theme.colors.border}
+              value={prevInfo.objetivo?.diario?.kms?.toString() ?? undefined}
+              onChangeText={setObjectiveInKilometers}
+              style={[styles.input, themedStyles.input, themedStyles.hideWhenObjectiveInSteps]} 
+            />
+            <ThemedText style={[themedStyles.hideWhenObjectiveInSteps]}>
+              <MaterialCommunityIcons name='speedometer' size={24} style={themedStyles.buttonDefaultText} />
+            </ThemedText>
+          </>
+        )}
       </ThemedView>
 
       <ThemedView style={[styles.elementContainer, themedStyles.borderBottom, {justifyContent: "center"}]}>
@@ -240,7 +251,7 @@ export default function TabThreeScreen() {
           <MaterialIcons name="autorenew" size={24} style={[themedStyles.buttonDefaultText]} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.roundButton, themedStyles.buttonPrimary]} onPress={setDailyObjectives}>
-          <FontAwesome6 name="add" size={24} style={[ themedStyles.buttonPrimaryText ]} />
+          <FontAwesome6 name="check" size={24} style={[ themedStyles.buttonPrimaryText ]} />
         </TouchableOpacity>
         <TouchableOpacity onPress={showUnitConversionInfo}>
           <MaterialIcons name="info-outline" size={24} style={[ themedStyles.buttonDefaultText ]} />

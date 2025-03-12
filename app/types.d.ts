@@ -3,6 +3,8 @@ import { ImageSourcePropType } from "react-native";
 
 export type Idioma = 'Español' | 'English'
 
+type Alias = {[key in GraphicsDirectory]: string}
+
 type Color = {
     color: string;
     disabledColor?: string;
@@ -111,9 +113,11 @@ export interface TemplateModalRuta extends Template {
     removeSplit: string;
     graphics: {
       nameText: string;
+      skyboxText: string;
       backgroundText: string;
       middleText: string;
       foregroundText: string;
+      alias: Alias;
     }
   };
   validationMessages: {
@@ -144,6 +148,14 @@ export interface TemplatePaths extends Template {
   pathSelectText: string;
 }
 
+/**
+ * Tipo usado para las plantillas de rutas predeterminadas en @/constants/hikePaths
+ */
+export interface DefaultPathTemplate extends Template {
+  nombre: string;
+  splits: string[];
+}
+
 // STORE
 
 export type Registro = {
@@ -162,6 +174,7 @@ export type Objetivo = {
 
 export type SpriteType = {
   skybox?: ImageSourcePropType;
+  background?: ImageSourcePropType;
   ground?: ImageSourcePropType;
   overlay?: ImageSourcePropType;
 }
@@ -185,7 +198,7 @@ export type Ruta = {
 
 export type UnidadObjetivo = 'pasos' | 'kms'
 
-export type GraphicsDirectory = 'grass' | 'town'
+export type GraphicsDirectory = 'grass' | 'town' | 'wasteland' | 'cave' | 'lake' | 'forest' | 'marsh'
 
 export type GraphicObject = {
     [key in GraphicsDirectory]: Split["sprites"]
