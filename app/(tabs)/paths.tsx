@@ -7,11 +7,11 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { FontAwesome6 } from '@expo/vector-icons';
-import { useAppStore } from '@/zustand/useStore';
 import { useTheme } from '@/hooks/useTheme';
 import { PathSelection } from '@/components/paths/PathSelection';
 import { useTemplate } from '@/hooks/useTemplate';
 import { TemplatePaths } from '../types';
+import History from '@/components/paths/History';
 
 export default function TabTwoScreen() {
 
@@ -30,8 +30,10 @@ export default function TabTwoScreen() {
       <ThemedText>{template.descriptionP2Text}</ThemedText>
       
       <ThemedText type="subtitle">{template.pathSelectText}</ThemedText>
-
       <PathSelection />
+
+      <ThemedText type="subtitle">{template.viewHistoryText}</ThemedText>
+      <History />
       
     </ParallaxScrollView>
   );

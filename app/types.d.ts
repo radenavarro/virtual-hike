@@ -146,6 +146,7 @@ export interface TemplatePaths extends Template {
   descriptionP1Text: string;
   descriptionP2Text: string;
   pathSelectText: string;
+  viewHistoryText?: string;
 }
 
 /**
@@ -161,6 +162,7 @@ export interface DefaultPathTemplate extends Template {
 export type Registro = {
   fecha?: dayjs.Dayjs;
   pasos?: number;
+  objetivo?: Objetivo;
 }
 
 export type DatosUser = {
