@@ -163,6 +163,7 @@ export type Registro = {
   fecha?: dayjs.Dayjs;
   pasos?: number;
   objetivo?: Objetivo;
+  ruta?: string;
 }
 
 export type DatosUser = {
