@@ -88,8 +88,9 @@ export const GRAPHICS = (() => {
 
 export const RESET = (() => {
   const objetivo = useAppStore.getState().objetivo || {diario: 0, ruta: 0}
+  const rutaActual = useAppStore.getState().selectedRuta || undefined
   return {
-    registro: () => useAppStore.getState().setRegistro({ fecha: dayjs(), pasos: 0, objetivo }),
+    registro: () => useAppStore.getState().setRegistro({ fecha: dayjs(), pasos: 0, objetivo, ruta: rutaActual }),
     historico: () => useAppStore.getState().setHistorico([]),
   }
 })()
