@@ -67,6 +67,19 @@ export function getAllOverlappingsInSplits(splits:Split[]) {
   return [...new Set(overlappings)];
 }
 
+/**
+ * Elimina registros viejos del histórico en el store de Zustand, acorde a los argumentos recibidos
+ * @param cantidad 
+ * @param unidad 
+ */
+export function borrarViejosRegistros(cantidad: number = 2, unidad: 'day' | 'month' | 'year' = 'month') {
+  const historico = useAppStore.getState().historico
+  const setHistorico = useAppStore.getState().setHistorico
+  const fecha = dayjs()
+  const nuevoHistorico = historico.filter(h => dayjs(h.fecha).isAfter(fecha.subtract(cantidad, unidad)))
+  setHistorico(nuevoHistorico)
+}
+
 export const GRAPHICS = (() => {
   return {
     getFrom: (directories: GraphicsDirectory[]) => {

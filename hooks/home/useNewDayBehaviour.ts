@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDay } from "../useDay";
 import { useAppStore } from "@/zustand/useStore";
-import { RESET } from "@/app/helpers/helpers";
+import { borrarViejosRegistros, RESET } from "@/app/helpers/helpers";
 import { Registro } from "@/app/types";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -32,6 +32,7 @@ export const useNewDayBehaviour = () => {
     if (!day.isSame(registro.fecha, 'day')) {
       agregarDiasSaltados(registro)
       agregarAHistorico(registro);
+      borrarViejosRegistros(2, 'month')
       RESET.registro();
     }
   }, [day])

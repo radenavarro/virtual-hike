@@ -2,8 +2,10 @@ import { StyleSheet } from 'react-native';
 import { Pasos } from '@/components/home/Pasos';
 import { Fondo } from '@/components/home/Fondo';
 import { CheckObjetivo } from '@/components/home/CheckObjetivo';
+import { borrarViejosRegistros } from '../helpers/helpers';
 
 export default function HomeScreen() {
+  borrarViejosRegistros()
   return (
     <Fondo>
       <CheckObjetivo/>
