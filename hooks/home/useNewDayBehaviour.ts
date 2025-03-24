@@ -12,25 +12,30 @@ export const useNewDayBehaviour = () => {
   const historico = useAppStore().historico;
   const { day } = useDay();
 
-  function agregarDiasSaltados(registro: Registro) {
+  /**
+   * Si el / la usuario no ha entrado en la app durante uno o más días, se agregan los días que falten con valores por defecto
+   */
+  function agregarDiasSaltados() {
     const ultimoRegistroEnStore = historico?.reduce((acc, curr) => 
       dayjs(acc.fecha).isValid() 
       && dayjs(curr.fecha).isValid() 
-      && dayjs(acc.fecha)?.isAfter(curr.fecha) 
+      && (dayjs(acc.fecha)?.isAfter(curr.fecha) && acc.fecha) 
       ? acc : curr, {}
     );
-    let _fecha = dayjs(ultimoRegistroEnStore.fecha, 'DD-MM-YYYY').add(1, 'day');
+    const nuevoRegistroPh: Registro = { fecha: dayjs(), pasos: 0, objetivo: ultimoRegistroEnStore.objetivo, ruta: ultimoRegistroEnStore.ruta };
+    let _fecha = dayjs(ultimoRegistroEnStore.fecha).add(1, 'day');
 
     const time = Date.now();
-    while (dayjs(registro.fecha, 'DD-MM-YYYY')?.isAfter(_fecha) && ((Date.now() - time) < 5000)) {
-      agregarAHistorico({ fecha: _fecha, pasos: 0, objetivo: registro.objetivo, ruta: registro.ruta });
+    while (nuevoRegistroPh.fecha?.isAfter(_fecha) && ((Date.now() - time) < 5000)) {
+      const registroEnStore = historico.find((h) => dayjs(h.fecha).isSame(_fecha, 'day'))
+      if (!registroEnStore) agregarAHistorico({ fecha: _fecha, pasos: 0, objetivo: nuevoRegistroPh.objetivo, ruta: nuevoRegistroPh.ruta });
       _fecha = _fecha.add(1, 'day');
     }
   }
 
   useEffect(() => {
     if (!day.isSame(registro.fecha, 'day')) {
-      agregarDiasSaltados(registro)
+      agregarDiasSaltados()
       agregarAHistorico(registro);
       borrarViejosRegistros(2, 'month')
       RESET.registro();
