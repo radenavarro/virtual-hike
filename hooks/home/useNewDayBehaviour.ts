@@ -26,7 +26,11 @@ export const useNewDayBehaviour = () => {
     let _fecha = dayjs(ultimoRegistroEnStore.fecha).add(1, 'day');
 
     const time = Date.now();
-    while (nuevoRegistroPh.fecha?.isAfter(_fecha) && ((Date.now() - time) < 5000)) {
+    while (
+      nuevoRegistroPh.fecha?.isAfter(_fecha) 
+      && !(nuevoRegistroPh.fecha?.isSame(_fecha)) 
+      && ((Date.now() - time) < 5000)
+    ) {
       const registroEnStore = historico.find((h) => dayjs(h.fecha).isSame(_fecha, 'day'))
       if (!registroEnStore) agregarAHistorico({ fecha: _fecha, pasos: 0, objetivo: nuevoRegistroPh.objetivo, ruta: nuevoRegistroPh.ruta });
       _fecha = _fecha.add(1, 'day');

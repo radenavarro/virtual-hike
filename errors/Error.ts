@@ -18,3 +18,10 @@ export class CalculationError extends Error {
         this.name = 'CalculationError'
     }
 }
+
+export class DateError extends Error {
+    constructor (message:string) {
+        super(message)
+        this.name = 'DateError'
+    }
+}

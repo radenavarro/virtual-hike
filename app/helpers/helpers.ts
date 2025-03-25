@@ -1,8 +1,10 @@
 import { useAppStore } from "@/zustand/useStore"
 import { GraphicObject, GraphicsDirectory, Split, UnidadObjetivo } from "../types"
-import { CalculationError } from "@/errors/Error"
-import dayjs from "dayjs"
+import { CalculationError, DateError } from "@/errors/Error"
 import { Sprites } from "@/constants/images"
+import dayjs from "dayjs"
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
 
 export function throttle (mainFunction: (...params:any[]) => void, delay: number) {
   let timerFlag: NodeJS.Timeout | null = null
@@ -103,7 +105,52 @@ export const RESET = (() => {
   const objetivo = useAppStore.getState().objetivo || {diario: 0, ruta: 0}
   const rutaActual = useAppStore.getState().selectedRuta || undefined
   return {
+    /**
+     * Resetea el registro en el store a valores por defecto
+     * @returns 
+     */
     registro: () => useAppStore.getState().setRegistro({ fecha: dayjs(), pasos: 0, objetivo, ruta: rutaActual }),
+    /**
+     * Resetea completamente el historico en el store a un array vacío
+     * @returns 
+     */
     historico: () => useAppStore.getState().setHistorico([]),
+    /**
+     * Elimina los registros del store a los que correspondan las fechas recibidas como argumento
+     * @param fechas 
+     */
+    historicoExcluyendoFechas: (fechas: `${string}-${string}-${string}`[]) => {
+      const historico = useAppStore.getState().historico
+      let fechasDayjs = fechas.map((fecha) => PARSE.date(fecha))
+
+      let nuevoHistorico = historico?.filter((registro) => {
+        return !fechasDayjs.find((fechaDayjs) => fechaDayjs.isSame(registro.fecha, 'day'))
+      })
+
+      useAppStore.getState().setHistorico(nuevoHistorico)
+    }
+  }
+})()
+
+export const PARSE = (() => {
+  function isEuroFormat (date:string) {
+    const dateArray = date.split('-')
+    return dateArray[0]?.length === 2 
+      && dateArray[1]?.length === 2 
+      && dateArray[2]?.length === 4
+  }
+  function isAmericanFormat (date:string) {
+    const dateArray = date.split('-')
+    return dateArray[0]?.length === 4 
+      && dateArray[1]?.length === 2 
+      && dateArray[2]?.length === 2
+  }
+  return {
+    date: (date: string) => {
+      if (isEuroFormat(date)) return dayjs(date, 'DD-MM-YYYY')
+      if (isAmericanFormat(date)) return dayjs(date, 'YYYY-MM-DD')
+
+      throw new DateError("DateError: La fecha no es válida o no se ha podido interpretar")
+    }
   }
 })()
