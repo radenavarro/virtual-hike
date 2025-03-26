@@ -10,6 +10,7 @@ dayjs.extend(customParseFormat);
 export const useNewDayBehaviour = () => {
   const { registro, agregarAHistorico } = useAppStore();
   const historico = useAppStore().historico;
+  const setHistorico = useAppStore().setHistorico;
   const { day } = useDay();
 
   /**
@@ -37,10 +38,25 @@ export const useNewDayBehaviour = () => {
     }
   }
 
+  /**
+   * Agrega un registro al histórico en el store, y si ya existe para una fecha, lo machaca
+   * @param registro 
+   */
+  function agregarNuevo(registro: Registro) {
+    const idxRegistroEnStore = historico.findIndex((h) => dayjs(h.fecha).isSame(dayjs(registro.fecha), 'day'))
+    if (idxRegistroEnStore === -1) {
+      agregarAHistorico(registro);
+    } else {
+      const nuevoHistorico = [...historico]
+      nuevoHistorico[idxRegistroEnStore] = registro
+      setHistorico(nuevoHistorico)
+    }
+  }
+
   useEffect(() => {
     if (!day.isSame(registro.fecha, 'day')) {
       agregarDiasSaltados()
-      agregarAHistorico(registro);
+      agregarNuevo(registro);
       borrarViejosRegistros(2, 'month')
       RESET.registro();
     }
