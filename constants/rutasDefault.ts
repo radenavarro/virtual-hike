@@ -1,7 +1,5 @@
-import { Ruta } from "@/app/types"
 import uuid from "react-native-uuid"
 import { Sprites } from "./images"
-import { duration } from "dayjs"
 import { athensMarathon } from "./hikePaths/athensMarathon/athensMarathon"
 import { frodosPath } from "./hikePaths/frodosPath/frodosPath"
 
