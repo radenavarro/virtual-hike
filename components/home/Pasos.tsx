@@ -10,12 +10,14 @@ import { useAppStore } from '@/zustand/useStore';
 import { TemplateIndex } from '@/app/types';
 import { objectiveConvert } from '@/app/helpers/helpers';
 import { usePath } from '@/hooks/home/usePath';
+import { useScore } from '@/hooks/gamification/useScore';
 
 export const Pasos = () => {
   // STORE
   const selectedRuta = useAppStore(state => state.selectedRuta)
   const inicioDeRuta = useAppStore(state => state.inicioRuta)
   const pasosDeRuta = useAppStore(state => state.pasosRuta)
+  const puntuacion = useAppStore(state => state.puntuacion)
 
   // CUSTOM HOOKS
   const { registro } = useAppStore()
@@ -25,6 +27,7 @@ export const Pasos = () => {
   const theme = useTheme()
   useSaveSteps(currentStepCount)// Guardar en AsyncStorage / Zustand
   useNewDayBehaviour()// Guardar en histórico a final del día y reset registro en AsyncStorage / Zustand
+  useScore()
 
   const { stepCounter } = theme.colors
 
@@ -64,6 +67,7 @@ export const Pasos = () => {
       {
         selectedRuta && (
           <>
+            <ThemedText type="subtitle">Puntos: {puntuacion}</ThemedText>
             <ThemedText type="subtitle">{template.stepCounter?.currentPathText}</ThemedText>
             <ThemedText type="title">{ rutaActiva?.nombre }</ThemedText>
             <ThemedText type='subtitle'>{template.stepCounter?.pathStartText}: { inicioDeRuta || "" }</ThemedText>

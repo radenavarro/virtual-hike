@@ -119,7 +119,7 @@ export const RESET = (() => {
      * Elimina los registros del store a los que correspondan las fechas recibidas como argumento
      * @param fechas 
      */
-    historicoExcluyendoFechas: (fechas: `${string}-${string}-${string}`[]) => {
+    fechasDeHistorico: (fechas: `${string}-${string}-${string}`[]) => {
       const historico = useAppStore.getState().historico
       let fechasDayjs = fechas.map((fecha) => PARSE.date(fecha))
 
@@ -128,7 +128,9 @@ export const RESET = (() => {
       })
 
       useAppStore.getState().setHistorico(nuevoHistorico)
-    }
+    },
+    
+    puntuacion: () => useAppStore.getState().setPuntuacion(0)
   }
 })()
 

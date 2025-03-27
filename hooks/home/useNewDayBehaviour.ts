@@ -23,7 +23,12 @@ export const useNewDayBehaviour = () => {
       && (dayjs(acc.fecha)?.isAfter(curr.fecha) && acc.fecha) 
       ? acc : curr, {}
     );
-    const nuevoRegistroPh: Registro = { fecha: dayjs(), pasos: 0, objetivo: ultimoRegistroEnStore.objetivo, ruta: ultimoRegistroEnStore.ruta };
+    const nuevoRegistroPh: Registro = { 
+      fecha: dayjs(), 
+      pasos: 0, 
+      objetivo: ultimoRegistroEnStore.objetivo, 
+      ruta: ultimoRegistroEnStore.ruta 
+    };
     let _fecha = dayjs(ultimoRegistroEnStore.fecha).add(1, 'day');
 
     const time = Date.now();
@@ -33,7 +38,15 @@ export const useNewDayBehaviour = () => {
       && ((Date.now() - time) < 5000)
     ) {
       const registroEnStore = historico.find((h) => dayjs(h.fecha).isSame(_fecha, 'day'))
-      if (!registroEnStore) agregarAHistorico({ fecha: _fecha, pasos: 0, objetivo: nuevoRegistroPh.objetivo, ruta: nuevoRegistroPh.ruta });
+      if (!registroEnStore) {
+        agregarAHistorico({ 
+          fecha: _fecha, 
+          pasos: 0, 
+          objetivo: nuevoRegistroPh.objetivo, 
+          ruta: nuevoRegistroPh.ruta,
+          puntuacion: 0,
+        });
+      }
       _fecha = _fecha.add(1, 'day');
     }
   }

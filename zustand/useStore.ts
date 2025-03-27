@@ -28,6 +28,10 @@ type UseStoreProps = {
   setInicioRuta: (fecha: string | undefined) => void;
   pasosRuta: number;
   setPasosRuta: (pasos: number) => void;
+  puntuacion: number;
+  setPuntuacion: (puntuacion: number) => void;
+  sumPuntuacion: (puntuacion: number) => void;
+  subPuntuacion: (puntuacion: number) => void;
 }
 
 export const useAppStore = create<UseStoreProps>()(
@@ -77,6 +81,12 @@ export const useAppStore = create<UseStoreProps>()(
           setInicioRuta: (fecha: string | undefined) => set({ inicioRuta: fecha }),
           pasosRuta: 0,
           setPasosRuta: (pasos: number) => set({ pasosRuta: pasos }),
+
+          // GAMIFICACIÓN
+          puntuacion: 0,
+          setPuntuacion: (puntuacion) => set({ puntuacion }),
+          sumPuntuacion: (puntuacion) => set(state => ({ puntuacion: state.puntuacion + puntuacion})),
+          subPuntuacion: (puntuacion) => set(state => ({ puntuacion: state.puntuacion - puntuacion})),
         }),
         {
           name: 'appstore',

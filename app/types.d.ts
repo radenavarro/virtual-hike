@@ -164,6 +164,7 @@ export type Registro = {
   pasos?: number;
   objetivo?: Objetivo;
   ruta?: string;
+  puntuacion?: number;
 }
 
 export type DatosUser = {
